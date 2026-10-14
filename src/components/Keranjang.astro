@@ -89,6 +89,7 @@ import Ikon from './Ikon.astro';
     const wa = root.dataset.wa ?? '';
     const brand = root.dataset.brand ?? '';
     const toastRoot = document.querySelector<HTMLElement>('[data-toast-root]');
+    const kurangiGerak = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const rp = (n: number) => 'Rp' + new Intl.NumberFormat('id-ID').format(n);
     const esc = (s: string) =>
@@ -285,7 +286,97 @@ import Ikon from './Ikon.astro';
       else daftar.push({ ...item, qty });
       simpan();
       render();
-      toast('Ditambahkan ke keranjang', item.nama, item.gambar);
+    };
+
+    const tombolKeranjangAktif = (): HTMLElement | null =>
+      [...document.querySelectorAll<HTMLElement>('[data-keranjang-tombol]')].find((el) => el.offsetParent !== null) ??
+      document.querySelector<HTMLElement>('[data-keranjang-tombol]');
+
+    // Denyut kecil pada ikon keranjang saat barang "mendarat".
+    const denyut = () => {
+      const t = tombolKeranjangAktif();
+      if (!t || kurangiGerak) return;
+      t.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.28)' }, { transform: 'scale(1)' }],
+        { duration: 340, easing: 'ease-out' },
+      );
+      document
+        .querySelector<HTMLElement>('[data-keranjang-jumlah]')
+        ?.animate(
+          [{ transform: 'scale(1)' }, { transform: 'scale(1.5)' }, { transform: 'scale(1)' }],
+          { duration: 340, easing: 'ease-out' },
+        );
+    };
+
+    // Animasi gambar produk "terbang" ke ikon keranjang.
+    const terbang = (btn: HTMLElement | null, nama: string, gambar: string) => {
+      const target = tombolKeranjangAktif();
+      const selesai = () => {
+        denyut();
+        toast('Ditambahkan ke keranjang', nama, gambar);
+      };
+      if (!target || !gambar || kurangiGerak) {
+        selesai();
+        return;
+      }
+
+      // Cari gambar sumber: kartu produk, atau galeri halaman detail.
+      let sumber = btn?.closest('article')?.querySelector('img') ?? null;
+      if (!sumber) {
+        const galeri = document.querySelector<HTMLElement>('#galeri-produk');
+        if (galeri) {
+          const imgs = [...galeri.querySelectorAll('img')];
+          sumber = imgs.find((im) => getComputedStyle(im).opacity !== '0') ?? imgs[0] ?? null;
+        }
+      }
+
+      const dari = (sumber ?? btn)?.getBoundingClientRect();
+      const ke = target.getBoundingClientRect();
+      if (!dari || !ke.width) {
+        selesai();
+        return;
+      }
+
+      const startX = dari.left + dari.width / 2;
+      const startY = dari.top + dari.height / 2;
+      const endX = ke.left + ke.width / 2;
+      const endY = ke.top + ke.height / 2;
+
+      const lebar = Math.min(96, Math.max(56, dari.width * 0.28));
+      const rasio = dari.width > 0 ? dari.height / dari.width : 1.25;
+
+      const hantu = document.createElement('img');
+      hantu.src = sumber instanceof HTMLImageElement ? sumber.currentSrc || gambar : gambar;
+      hantu.alt = '';
+      hantu.setAttribute('aria-hidden', 'true');
+      hantu.style.cssText = `position:fixed;left:${startX}px;top:${startY}px;width:${lebar}px;height:${lebar * rasio}px;object-fit:cover;border-radius:12px;box-shadow:0 14px 34px -10px rgba(0,0,0,.4);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);will-change:transform,opacity`;
+      document.body.appendChild(hantu);
+
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const busur = Math.min(180, Math.abs(dx) * 0.25 + 80);
+
+      const anim = hantu.animate(
+        [
+          { transform: 'translate(-50%,-50%) translate(0,0) scale(1)', opacity: 1, offset: 0 },
+          {
+            transform: `translate(-50%,-50%) translate(${dx * 0.55}px, ${dy * 0.55 - busur}px) scale(0.9)`,
+            opacity: 1,
+            offset: 0.55,
+          },
+          {
+            transform: `translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(0.28)`,
+            opacity: 0,
+            offset: 1,
+          },
+        ],
+        { duration: 700, easing: 'cubic-bezier(.5,0,.6,1)' },
+      );
+      anim.onfinish = () => {
+        hantu.remove();
+        selesai();
+      };
+      anim.oncancel = () => hantu.remove();
     };
 
     // Tombol "Tambah ke keranjang" di seluruh situs.
@@ -296,6 +387,7 @@ import Ikon from './Ikon.astro';
       const { slug, nama, harga, gambar, varian } = btn.dataset;
       if (!slug || !nama) return;
       tambah({ slug, nama, harga: Number(harga) || 0, gambar: gambar ?? '', varian: varian || undefined });
+      terbang(btn, nama, gambar ?? '');
     });
 
     // Kontrol di dalam panel.
