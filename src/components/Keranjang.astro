@@ -308,31 +308,24 @@ import Ikon from './Ikon.astro';
         );
     };
 
-    // Animasi gambar produk "terbang" ke ikon keranjang.
+    const JALUR_KERANJANG =
+      'M3.5 4.5h2.2l2.4 10.2h9.4l2.2-7.4H7M9.5 20a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6Zm7 0a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6Z';
+
+    // Animasi ikon keranjang "terlempar" dari tombol yang diklik ke ikon keranjang header.
     const terbang = (btn: HTMLElement | null, nama: string, gambar: string) => {
       const target = tombolKeranjangAktif();
       const selesai = () => {
         denyut();
         toast('Ditambahkan ke keranjang', nama, gambar);
       };
-      if (!target || !gambar || kurangiGerak) {
+      const dari = btn?.getBoundingClientRect();
+      if (!target || !dari || kurangiGerak) {
         selesai();
         return;
       }
 
-      // Cari gambar sumber: kartu produk, atau galeri halaman detail.
-      let sumber = btn?.closest('article')?.querySelector('img') ?? null;
-      if (!sumber) {
-        const galeri = document.querySelector<HTMLElement>('#galeri-produk');
-        if (galeri) {
-          const imgs = [...galeri.querySelectorAll('img')];
-          sumber = imgs.find((im) => getComputedStyle(im).opacity !== '0') ?? imgs[0] ?? null;
-        }
-      }
-
-      const dari = (sumber ?? btn)?.getBoundingClientRect();
       const ke = target.getBoundingClientRect();
-      if (!dari || !ke.width) {
+      if (!ke.width) {
         selesai();
         return;
       }
@@ -342,35 +335,31 @@ import Ikon from './Ikon.astro';
       const endX = ke.left + ke.width / 2;
       const endY = ke.top + ke.height / 2;
 
-      const lebar = Math.min(96, Math.max(56, dari.width * 0.28));
-      const rasio = dari.width > 0 ? dari.height / dari.width : 1.25;
-
-      const hantu = document.createElement('img');
-      hantu.src = sumber instanceof HTMLImageElement ? sumber.currentSrc || gambar : gambar;
-      hantu.alt = '';
+      const hantu = document.createElement('div');
       hantu.setAttribute('aria-hidden', 'true');
-      hantu.style.cssText = `position:fixed;left:${startX}px;top:${startY}px;width:${lebar}px;height:${lebar * rasio}px;object-fit:cover;border-radius:12px;box-shadow:0 14px 34px -10px rgba(0,0,0,.4);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);will-change:transform,opacity`;
+      hantu.style.cssText = `position:fixed;left:${startX}px;top:${startY}px;width:40px;height:40px;border-radius:9999px;background:var(--color-rose-700);color:var(--color-kertas);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);will-change:transform,opacity`;
+      hantu.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${JALUR_KERANJANG}"/></svg>`;
       document.body.appendChild(hantu);
 
       const dx = endX - startX;
       const dy = endY - startY;
-      const busur = Math.min(180, Math.abs(dx) * 0.25 + 80);
+      const busur = Math.min(140, Math.abs(dx) * 0.22 + 60);
 
       const anim = hantu.animate(
         [
           { transform: 'translate(-50%,-50%) translate(0,0) scale(1)', opacity: 1, offset: 0 },
           {
-            transform: `translate(-50%,-50%) translate(${dx * 0.55}px, ${dy * 0.55 - busur}px) scale(0.9)`,
+            transform: `translate(-50%,-50%) translate(${dx * 0.55}px, ${dy * 0.55 - busur}px) scale(1.08)`,
             opacity: 1,
-            offset: 0.55,
+            offset: 0.5,
           },
           {
-            transform: `translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(0.28)`,
+            transform: `translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(0.35)`,
             opacity: 0,
             offset: 1,
           },
         ],
-        { duration: 700, easing: 'cubic-bezier(.5,0,.6,1)' },
+        { duration: 520, easing: 'cubic-bezier(.5,0,.6,1)' },
       );
       anim.onfinish = () => {
         hantu.remove();
