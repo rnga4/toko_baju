@@ -156,12 +156,12 @@ export const alurBelanja: readonly { langkah: string; judul: string; teks: strin
   {
     langkah: '01',
     judul: 'Pilih koleksi',
-    teks: 'Telusuri katalog, lihat detail bahan, ukuran, dan warna yang tersedia.',
+    teks: 'Telusuri katalog, lalu tekan tombol keranjang pada produk yang kamu suka.',
   },
   {
     langkah: '02',
-    judul: 'Konfirmasi via WhatsApp',
-    teks: 'Sebutkan nama produk, ukuran, dan warna. Tim kami bantu cek stok terbaru.',
+    judul: 'Checkout via WhatsApp',
+    teks: 'Buka keranjang, pastikan pesananmu, lalu kirim daftarnya ke admin sekali klik.',
   },
   {
     langkah: '03',

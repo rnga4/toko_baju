@@ -16,7 +16,7 @@ import {
   persenDiskon,
   type Produk,
 } from '../../data/produk';
-import { rupiah, rupiahRingkas, tanggalPendek } from '../../lib/format';
+import { rupiah, rupiahRingkas } from '../../lib/format';
 
 export const getStaticPaths = (() =>
   semuaProduk.map((produk) => ({
@@ -191,7 +191,6 @@ const galeri = [{ nama: produk.nama, gambar: produk.gambar }, ...produk.gambarVa
       <div class="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Bintang nilai={produk.rating} ukuran="md" tampilAngka />
         <span class="text-sm text-sand-600">{produk.terjual} terjual</span>
-        <span class="text-sm text-sand-600">Masuk katalog {tanggalPendek(produk.tanggalMasuk)}</span>
       </div>
 
       <div class="mt-6 flex flex-wrap items-end gap-3">
@@ -213,87 +212,60 @@ const galeri = [{ nama: produk.nama, gambar: produk.gambar }, ...produk.gambarVa
 
       <p class="mt-6 text-[0.9375rem] leading-relaxed text-sand-700">{produk.deskripsi}</p>
 
-      <ul class="mt-5 flex flex-wrap gap-2">
-        {
-          produk.catatan.map((c) => (
-            <li class="inline-flex items-center gap-1.5 rounded-full bg-sand-100 px-3 py-1.5 text-xs text-sand-600">
-              <Ikon nama="centang" kelas="size-3.5 text-rose-600" />
-              {c}
-            </li>
-          ))
-        }
-      </ul>
+      <div class="mt-6">
+        <p class="text-xs font-semibold tracking-[0.12em] text-sand-600 uppercase">Warna</p>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {
+            produk.warna.map((w) => (
+              <span data-warna={w} class="rounded-full bg-sand-100 px-3 py-1 text-xs text-sand-700 transition-colors">
+                {w}
+              </span>
+            ))
+          }
+        </div>
+      </div>
 
-      <dl class="mt-8 divide-y divide-sand-200 border-y border-sand-200 text-sm">
-        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
-          <dt class="text-sand-600">Bahan</dt>
-          <dd class="text-sand-800">{produk.bahan}</dd>
+      <div class="mt-4">
+        <p class="text-xs font-semibold tracking-[0.12em] text-sand-600 uppercase">Ukuran</p>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {
+            produk.ukuran.map((u) => (
+              <span class="rounded-lg border border-sand-200 px-3 py-1 text-xs text-sand-700">{u}</span>
+            ))
+          }
         </div>
-        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
-          <dt class="text-sand-600">Warna</dt>
-          <dd class="flex flex-wrap gap-1.5">
-            {
-              produk.warna.map((w) => (
-                <span data-warna={w} class="rounded-md bg-sand-100 px-2 py-0.5 text-xs text-sand-700 transition-colors">
-                  {w}
-                </span>
-              ))
-            }
-          </dd>
-        </div>
-        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
-          <dt class="text-sand-600">Ukuran</dt>
-          <dd class="flex flex-wrap gap-1.5">
-            {
-              produk.ukuran.map((u) => (
-                <span class="rounded-md border border-sand-200 px-2.5 py-0.5 text-xs text-sand-700">{u}</span>
-              ))
-            }
-          </dd>
-        </div>
-        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
-          <dt class="text-sand-600">Stok</dt>
-          <dd
-            class:list={[
-              'font-medium',
-              habis ? 'text-rose-700' : menipis ? 'text-champagne-700' : 'text-emerald-700',
-            ]}
-          >
-            {habis ? 'Stok habis' : menipis ? `Tinggal ${produk.stok} pcs` : `Tersedia ${produk.stok} pcs`}
-          </dd>
-        </div>
-        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
-          <dt class="text-sand-600">Perawatan</dt>
-          <dd>
-            <ul class="space-y-1.5">
-              {
-                produk.perawatan.map((p) => (
-                  <li class="flex gap-2 text-sand-700">
-                    <Ikon nama="centang" kelas="mt-0.5 size-3.5 shrink-0 text-rose-600" />
-                    {p}
-                  </li>
-                ))
-              }
-            </ul>
-          </dd>
-        </div>
-      </dl>
+      </div>
 
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         {
           habis ? (
             <span class="tombol tombol-utama flex-1 cursor-not-allowed opacity-50" aria-disabled="true">
-              <Ikon nama="whatsapp" kelas="size-4" />
+              <Ikon nama="keranjang" kelas="size-4" />
               Stok habis
             </span>
           ) : (
-            <a href={tautanPesan} target="_blank" rel="noopener" data-wa-pesan class="tombol tombol-utama flex-1">
+            <button
+              type="button"
+              data-tambah-keranjang
+              data-slug={produk.slug}
+              data-nama={produk.nama}
+              data-harga={produk.harga}
+              data-gambar={produk.gambar.src}
+              class="tombol tombol-utama flex-1"
+            >
+              <Ikon nama="keranjang" kelas="size-4" />
+              Tambah ke keranjang
+            </button>
+          )
+        }
+        {
+          !habis && (
+            <a href={tautanPesan} target="_blank" rel="noopener" data-wa-pesan class="tombol tombol-sekunder flex-1">
               <Ikon nama="whatsapp" kelas="size-4" />
               Pesan via WhatsApp
             </a>
           )
         }
-        <a href="/katalog" class="tombol tombol-sekunder">Lihat produk lain</a>
       </div>
 
       <ul class="mt-6 grid gap-2.5 text-xs text-sand-600 sm:grid-cols-3">
@@ -301,6 +273,53 @@ const galeri = [{ nama: produk.nama, gambar: produk.gambar }, ...produk.gambarVa
         <li class="flex items-center gap-2"><Ikon nama="swap" kelas="size-4 text-rose-400" /> Tukar ukuran 7 hari</li>
         <li class="flex items-center gap-2"><Ikon nama="shield" kelas="size-4 text-rose-400" /> Garansi cacat produksi</li>
       </ul>
+
+      <details class="group mt-8 rounded-besar border border-sand-200">
+        <summary
+          class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-sand-900 marker:hidden"
+        >
+          Detail bahan &amp; perawatan
+          <span
+            class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-700 transition-transform group-open:rotate-45"
+          >
+            <svg viewBox="0 0 24 24" class="size-3.5" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+            </svg>
+          </span>
+        </summary>
+        <dl class="divide-y divide-sand-100 border-t border-sand-200 px-5 text-sm">
+          <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5">
+            <dt class="text-sand-600">Bahan</dt>
+            <dd class="text-sand-800">{produk.bahan}</dd>
+          </div>
+          <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5">
+            <dt class="text-sand-600">Stok</dt>
+            <dd
+              class:list={[
+                'font-medium',
+                habis ? 'text-rose-700' : menipis ? 'text-champagne-700' : 'text-emerald-700',
+              ]}
+            >
+              {habis ? 'Stok habis' : menipis ? `Tinggal ${produk.stok} pcs` : `Tersedia ${produk.stok} pcs`}
+            </dd>
+          </div>
+          <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5">
+            <dt class="text-sand-600">Perawatan</dt>
+            <dd>
+              <ul class="space-y-1.5">
+                {
+                  produk.perawatan.map((p) => (
+                    <li class="flex gap-2 text-sand-700">
+                      <Ikon nama="centang" kelas="mt-0.5 size-3.5 shrink-0 text-rose-600" />
+                      {p}
+                    </li>
+                  ))
+                }
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </details>
     </div>
   </article>
 
@@ -336,10 +355,30 @@ const galeri = [{ nama: produk.nama, gambar: produk.gambar }, ...produk.gambarVa
             Stok habis
           </span>
         ) : (
-          <a href={tautanPesan} target="_blank" rel="noopener" data-wa-pesan class="tombol tombol-utama shrink-0">
-            <Ikon nama="whatsapp" kelas="size-4" />
-            Pesan
-          </a>
+          <div class="flex shrink-0 items-center gap-2">
+            <a
+              href={tautanPesan}
+              target="_blank"
+              rel="noopener"
+              data-wa-pesan
+              class="tombol tombol-sekunder px-3"
+              aria-label="Pesan via WhatsApp"
+            >
+              <Ikon nama="whatsapp" kelas="size-4" />
+            </a>
+            <button
+              type="button"
+              data-tambah-keranjang
+              data-slug={produk.slug}
+              data-nama={produk.nama}
+              data-harga={produk.harga}
+              data-gambar={produk.gambar.src}
+              class="tombol tombol-utama"
+            >
+              <Ikon nama="keranjang" kelas="size-4" />
+              Tambah
+            </button>
+          </div>
         )
       }
     </div>

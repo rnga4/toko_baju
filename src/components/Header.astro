@@ -41,14 +41,22 @@ const aktif = (href: string) => href === pathSekarang;
       }
     </nav>
 
-    <div class="flex items-center gap-2">
-      <a
-        href="/katalog#cari"
-        class="hidden size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700 sm:inline-flex"
-        aria-label="Cari produk"
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <button
+        type="button"
+        data-keranjang-tombol
+        class="relative inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700"
+        aria-label="Buka keranjang"
       >
-        <Ikon nama="cari" kelas="size-5" />
-      </a>
+        <Ikon nama="keranjang" kelas="size-5" />
+        <span
+          data-keranjang-jumlah
+          hidden
+          class="absolute top-0.5 right-0.5 inline-flex min-w-4.5 items-center justify-center rounded-full bg-rose-700 px-1 text-[0.625rem] leading-4 font-semibold text-white"
+        >
+          0
+        </span>
+      </button>
 
       <button
         type="button"

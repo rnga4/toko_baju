@@ -5,14 +5,14 @@ import SectionJudul from '../components/SectionJudul.astro';
 import ProdukCard from '../components/ProdukCard.astro';
 import TombolWa from '../components/TombolWa.astro';
 import Bintang from '../components/Bintang.astro';
-import { SITE } from '../data/site';
-import { kategori, produkBaru, produkTerlaris, semuaProduk } from '../data/produk';
-import { alurBelanja, faq, keunggulan, promoAktif, statistik, ulasan } from '../data/konten';
-import { angka, tanggalPendek } from '../lib/format';
+import { SITE, linkWa } from '../data/site';
+import { kategori, produkTerlaris } from '../data/produk';
+import { alurBelanja, promoAktif, statistik, ulasan } from '../data/konten';
+import { tanggalPendek } from '../lib/format';
 import { Image } from 'astro:assets';
 
-const hero = produkTerlaris.slice(0, 3);
-const contoh = [...produkBaru.slice(0, 3), ...produkTerlaris.slice(3, 5)];
+const unggulan = produkTerlaris[0]!;
+const promo = promoAktif[0]!;
 
 const skema = {
   '@context': 'https://schema.org',
@@ -33,14 +33,14 @@ const skema = {
   <section class="relative overflow-hidden bg-sand-50">
     <div class="pola-anyam absolute inset-0" aria-hidden="true"></div>
 
-    <div class="wadah relative grid items-center gap-14 py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-20 lg:py-24">
+    <div class="wadah relative grid items-center gap-12 py-14 lg:grid-cols-2 lg:gap-16 lg:py-20">
       <div class="animate-naik">
         <p class="label bg-rose-100 text-rose-800">
           <span class="size-1.5 rounded-full bg-rose-500" aria-hidden="true"></span>
           Koleksi Gugur 2026 sudah hadir
         </p>
 
-        <h1 class="mt-6 text-[2.25rem] leading-[1.1] text-balance sm:text-[3rem] lg:text-[3.5rem]">
+        <h1 class="mt-6 text-[2.25rem] leading-[1.1] text-balance sm:text-[3rem] lg:text-[3.4rem]">
           Busana wanita yang <em class="font-serif italic text-rose-700">mekar</em> bersama gaya Anda.
         </h1>
 
@@ -51,155 +51,93 @@ const skema = {
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <a href="/katalog" class="tombol tombol-utama">
-            Lihat katalog
+            Belanja sekarang
             <Ikon nama="panah" kelas="size-4" />
           </a>
-          <a href="#alur" class="tombol tombol-sekunder">Cara belanja</a>
+          <a href={linkWa()} target="_blank" rel="noopener" class="tombol tombol-sekunder">
+            <Ikon nama="whatsapp" kelas="size-4" />
+            Chat admin
+          </a>
         </div>
-
-        <dl class="mt-12 grid max-w-lg grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4">
-          {
-            statistik.map((s) => (
-              <div>
-                <dt class="sr-only">{s.label}</dt>
-                <dd>
-                  <span class="block font-serif text-2xl font-semibold text-rose-800">{s.angka}</span>
-                  <span class="mt-1 block text-xs leading-snug text-sand-600">{s.label}</span>
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
       </div>
 
-      <!-- Kolase foto produk -->
-      <div class="relative animate-masuk" aria-hidden="true">
-        <div class="grid grid-cols-2 gap-4 sm:gap-5">
-          {
-            hero.slice(0, 2).map((p, i) => (
-              <div
-                class:list={[
-                  'overflow-hidden rounded-besar bg-sand-100 shadow-angkat',
-                  i === 0 ? 'aspect-4/5' : 'mt-10 aspect-4/5',
-                ]}
-              >
-                <Image
-                  src={p.gambar}
-                  alt={p.nama}
-                  widths={[320, 560]}
-                  sizes="(min-width: 1024px) 17rem, 45vw"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  class="size-full object-cover"
-                />
-              </div>
-            ))
-          }
+      <div class="relative mx-auto w-full max-w-sm animate-masuk lg:mx-0 lg:ml-auto">
+        <div class="aspect-4/5 overflow-hidden rounded-besar bg-sand-100 shadow-angkat">
+          <Image
+            src={unggulan.gambar}
+            alt={unggulan.nama}
+            widths={[480, 760]}
+            sizes="(min-width: 1024px) 24rem, 80vw"
+            loading="eager"
+            fetchpriority="high"
+            class="size-full object-cover"
+          />
         </div>
 
         <div
-          class="absolute -bottom-6 -left-2 w-44 rounded-besar border border-sand-200 bg-white/95 p-4 shadow-angkat backdrop-blur sm:-left-6 sm:w-56 sm:p-5"
+          class="absolute -bottom-5 -left-4 w-48 rounded-besar border border-sand-200 bg-white/95 p-4 shadow-angkat backdrop-blur sm:-left-6 sm:w-56"
         >
           <p class="text-[0.6875rem] font-semibold tracking-[0.12em] text-rose-600 uppercase">
             Terlaris bulan ini
           </p>
           <p class="mt-1.5 font-serif text-lg leading-snug font-semibold text-sand-900">
-            {produkTerlaris[0]?.nama}
+            {unggulan.nama}
           </p>
           <div class="mt-2">
-            <Bintang nilai={produkTerlaris[0]?.rating ?? 5} tampilAngka />
+            <Bintang nilai={unggulan.rating} tampilAngka />
           </div>
-          <p class="mt-2 text-xs text-sand-600">{angka(produkTerlaris[0]?.terjual ?? 0)} terjual</p>
         </div>
       </div>
     </div>
-
-    <div class="h-10 bg-rose-900/5" aria-hidden="true"></div>
   </section>
 
-  <!-- ========================== KEUNGGULAN ========================= -->
-  <section class="wadah py-20 sm:py-24" aria-labelledby="jdl-keunggulan">
+  <!-- ========================= TRUST STRIP ======================== -->
+  <section class="border-y border-sand-200 bg-white" aria-label="Keunggulan belanja">
+    <div class="wadah grid grid-cols-2 gap-x-4 gap-y-6 py-7 sm:grid-cols-4">
+      {
+        statistik.map((s) => (
+          <div class="text-center">
+            <p class="font-serif text-2xl font-semibold text-rose-800">{s.angka}</p>
+            <p class="mt-1 text-xs leading-snug text-sand-600">{s.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- =========================== KATEGORI ========================== -->
+  <section class="wadah py-16 sm:py-20" aria-labelledby="jdl-kategori">
     <SectionJudul
-      judul="Kenapa banyak pelanggan balik lagi"
-      label="Keunggulan kami"
-      deskripsi="Enam hal yang kami jaga di setiap pesanan. Di sinilah letak bedanya toko yang serius dengan yang sekadar jualan."
+      judul="Belanja sesuai kategori"
+      label="Koleksi"
+      deskripsi="Tujuh kategori favorit, tersedia dalam ukuran S sampai XXL."
     />
 
-    <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <ul class="mt-8 flex flex-wrap justify-center gap-2.5">
       {
-        keunggulan.map((k) => (
-          <li class="group rounded-besar border border-sand-200 bg-white p-6 transition-colors hover:border-rose-200">
-            <span class="inline-flex size-11 items-center justify-center rounded-full bg-rose-50 text-rose-700 transition-colors group-hover:bg-rose-700 group-hover:text-white">
-              <Ikon nama={k.ikon} kelas="size-5" />
-            </span>
-            <h3 class="mt-4 text-lg font-semibold text-sand-900">{k.judul}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-sand-600">{k.teks}</p>
+        kategori.map((k) => (
+          <li>
+            <a
+              href={`/katalog/?kategori=${k.slug}`}
+              class="inline-flex rounded-full border border-sand-200 bg-white px-5 py-2.5 text-sm font-medium text-sand-700 transition-colors hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800"
+            >
+              {k.nama}
+            </a>
           </li>
         ))
       }
     </ul>
   </section>
 
-  <!-- =========================== KATEGORI ========================== -->
-  <section class="bg-sand-50 py-20 sm:py-24" aria-labelledby="jdl-kategori">
-    <div class="wadah">
-      <SectionJudul
-        judul="Mulai dari kategori favoritmu"
-        label="Koleksi"
-        deskripsi="Tujuh kategori yang paling sering dicari, selalu tersedia dalam ukuran S sampai XXL."
-      />
-
-      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          kategori.map((k) => {
-            const contohProduk = semuaProduk.filter((p) => p.kategori === k.slug).slice(0, 2);
-            return (
-              <li>
-                <a
-                  href={`/katalog/?kategori=${k.slug}`}
-                  class="group flex items-center gap-5 rounded-besar border border-sand-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-rose-200 hover:shadow-angkat"
-                >
-                  <span class="grid shrink-0 -space-x-8">
-                    {contohProduk.map((p) => (
-                      <Image
-                        src={p.gambar}
-                        alt=""
-                        widths={[120]}
-                        sizes="4.5rem"
-                        loading="lazy"
-                        class="size-18 rounded-2xl border-2 border-white object-cover shadow-sm"
-                      />
-                    ))}
-                  </span>
-                  <span class="min-w-0 flex-1">
-                    <span class="block font-serif text-lg font-semibold text-sand-900 transition-colors group-hover:text-rose-700">
-                      {k.nama}
-                    </span>
-                    <span class="mt-1 block text-[0.8125rem] leading-relaxed text-sand-600">
-                      {k.deskripsi}
-                    </span>
-                  </span>
-                  <Ikon
-                    nama="panah-kanan"
-                    kelas="size-4 shrink-0 text-sand-500 transition-transform group-hover:translate-x-1 group-hover:text-rose-600"
-                  />
-                </a>
-              </li>
-            );
-          })
-        }
-      </ul>
-    </div>
-  </section>
-
   <!-- ========================== PRODUK TERLARIS ==================== -->
-  <section class="wadah py-20 sm:py-24" aria-labelledby="jdl-terlaris">
+  <section class="wadah py-16 sm:py-20" aria-labelledby="jdl-terlaris">
     <div class="flex flex-wrap items-end justify-between gap-6">
       <SectionJudul
         judul="Paling laris bulan ini"
         label="Terlaris"
         aligns="kiri"
         kelas="max-w-xl"
-        deskripsi="Produk yang paling sering dipesan ulang. Stoknya cepat habis, jadi cek ukuran dulu sebelum checkout."
+        deskripsi="Produk yang paling sering dipesan ulang. Tambahkan ke keranjang, checkout sekali."
       />
       <a href="/katalog" class="tombol tombol-sekunder shrink-0">
         Lihat semua
@@ -207,7 +145,7 @@ const skema = {
       </a>
     </div>
 
-    <ul class="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+    <ul class="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
       {
         produkTerlaris.slice(0, 4).map((p, i) => (
           <li>
@@ -216,95 +154,43 @@ const skema = {
         ))
       }
     </ul>
-
-    <ul class="mt-6 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-      {
-        produkTerlaris.slice(4, 8).map((p) => (
-          <li>
-            <ProdukCard produk={p} />
-          </li>
-        ))
-      }
-    </ul>
   </section>
 
   <!-- ============================= PROMO =========================== -->
   <section class="wadah py-4" aria-label="Promo berjalan">
-    <div class="grid gap-5 lg:grid-cols-2">
-      {
-        promoAktif.map((pr, i) => (
-          <div
-            class:list={[
-              'relative overflow-hidden rounded-besar p-8 sm:p-10',
-              i === 0
-                ? 'bg-rose-900 text-rose-50'
-                : 'border border-champagne-200 bg-champagne-100 text-rose-950',
-            ]}
+    <div class="relative overflow-hidden rounded-besar bg-rose-900 p-8 text-rose-50 sm:p-12">
+      <div class="tekstur-lin absolute inset-0" aria-hidden="true"></div>
+      <div class="relative flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div class="max-w-xl">
+          <p class="label bg-champagne-300 text-rose-950">Berlaku {promo.berlaku}</p>
+          <h2 class="mt-4 text-2xl leading-tight text-balance sm:text-[1.75rem]">{promo.judul}</h2>
+          <p class="mt-3 text-sm leading-relaxed text-rose-200">{promo.sub}</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <code
+            class="rounded-xl border border-dashed border-rose-400 px-4 py-2.5 font-mono text-sm font-semibold tracking-wider text-rose-50"
           >
-            <div class="tekstur-lin absolute inset-0" aria-hidden="true"></div>
-            <div class="relative">
-              <p
-                class:list={[
-                  'label',
-                  i === 0 ? 'bg-champagne-300 text-rose-950' : 'bg-rose-800 text-white',
-                ]}
-              >
-                Berlaku {pr.berlaku}
-              </p>
-              <h2 class="mt-5 text-2xl leading-tight text-balance sm:text-[1.75rem]">{pr.judul}</h2>
-              <p class:list={['mt-3 text-sm leading-relaxed', i === 0 ? 'text-rose-200' : 'text-rose-800']}>
-                {pr.sub}
-              </p>
-
-              <div class="mt-6 flex flex-wrap items-center gap-3">
-                <code
-                  class:list={[
-                    'rounded-xl border border-dashed px-4 py-2.5 font-mono text-sm font-semibold tracking-wider',
-                    i === 0 ? 'border-rose-400 text-rose-50' : 'border-rose-400 text-rose-900',
-                  ]}
-                >
-                  {pr.kode}
-                </code>
-                <span class:list={['text-xs', i === 0 ? 'text-rose-300' : 'text-rose-700']}>
-                  {pr.syarat}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))
-      }
+            {promo.kode}
+          </code>
+          <a href="/katalog" class="tombol tombol-terang">
+            Belanja sekarang
+            <Ikon nama="panah" kelas="size-4" />
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- =========================== PRODUK BARU ====================== -->
-  <section class="wadah py-20 sm:py-24" aria-labelledby="jdl-baru">
-    <SectionJudul
-      judul="Baru saja masuk"
-      label="Terbaru"
-      deskripsi="Koleksi yang baru kami tambahkan dua minggu terakhir."
-    />
-
-    <ul class="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
-      {
-        contoh.map((p, i) => (
-          <li>
-            <ProdukCard produk={p} prioritas={i < 3} />
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
   <!-- ============================ ALUR BELANJA ===================== -->
-  <section id="alur" class="scroll-mt-24 bg-sand-900 py-20 text-sand-100 sm:py-24" aria-labelledby="jdl-alur">
+  <section id="alur" class="scroll-mt-24 bg-sand-900 py-16 text-sand-100 sm:py-20">
     <div class="wadah">
       <SectionJudul
         judul="Empat langkah, selesai"
         label="Cara belanja"
-        deskripsi="Tidak ada keranjang yang bikin bingung. Pilih, konfirmasi, bayar, sampai."
+        deskripsi="Tanpa keranjang yang bikin bingung. Pilih, checkout lewat WhatsApp, bayar, sampai."
       />
 
-      <ol class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <ol class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {
           alurBelanja.map((s) => (
             <li class="relative">
@@ -321,16 +207,16 @@ const skema = {
   </section>
 
   <!-- ============================ TESTIMONI ======================== -->
-  <section class="wadah py-20 sm:py-24" aria-labelledby="jdl-ulasan">
+  <section class="wadah py-16 sm:py-20" aria-labelledby="jdl-ulasan">
     <SectionJudul
       judul="Kata mereka yang sudah belanja"
       label="Ulasan"
       deskripsi="Rata-rata rating 4,9 dari 2.140 ulasan di Instagram dan WhatsApp."
     />
 
-    <ul class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    <ul class="mt-10 grid gap-5 md:grid-cols-3">
       {
-        ulasan.map((u) => (
+        ulasan.slice(0, 3).map((u) => (
           <li class="flex h-full flex-col rounded-besar border border-sand-200 bg-white p-6">
             <Bintang nilai={u.rating} />
             <blockquote class="mt-4 flex-1 text-[0.9375rem] leading-relaxed text-sand-700">
@@ -347,51 +233,14 @@ const skema = {
                 </span>
               </span>
             </footer>
-            <p class="mt-3 text-xs text-sand-600">Membeli: {u.produk}</p>
           </li>
         ))
       }
     </ul>
   </section>
 
-  <!-- =============================== FAQ =========================== -->
-  <section class="bg-sand-50 py-20 sm:py-24" aria-labelledby="jdl-faq">
-    <div class="wadah grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-      <div>
-        <SectionJudul
-          judul="Pertanyaan yang sering masuk"
-          label="FAQ"
-          aligns="kiri"
-          deskripsi="Kalau belum menemukan jawabannya, tanya saja lewat WhatsApp. Kami balas di jam kerja."
-        />
-        <a href="/kontak#faq" class="tombol tombol-sekunder mt-7">
-          Lihat semua pertanyaan
-          <Ikon nama="panah" kelas="size-4" />
-        </a>
-      </div>
-
-      <div class="divide-y divide-sand-200 rounded-besar border border-sand-200 bg-white px-6">
-        {
-          faq.slice(0, 5).map((f) => (
-            <details class="group py-5">
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-[0.9375rem] font-semibold text-sand-900 marker:hidden">
-                {f.tanya}
-                <span class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-700 transition-transform group-open:rotate-45">
-                  <svg viewBox="0 0 24 24" class="size-3.5" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true">
-                    <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-                  </svg>
-                </span>
-              </summary>
-              <p class="mt-3 text-sm leading-relaxed text-sand-600">{f.jawab}</p>
-            </details>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- ============================ CTA AKHIR ======================== -->
-  <section class="wadah py-20 sm:py-24">
+  <section class="wadah py-16 sm:py-20">
     <div class="relative overflow-hidden rounded-besar bg-rose-900 px-6 py-14 text-center text-rose-50 sm:px-12 sm:py-20">
       <div class="pola-anyam absolute inset-0 opacity-70" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-2xl">
@@ -399,8 +248,8 @@ const skema = {
           Sudah siap tampil cantik hari ini?
         </h2>
         <p class="mx-auto mt-4 max-w-lg text-[0.9375rem] leading-relaxed text-rose-200 sm:text-base">
-          Chat admin untuk cek ukuran, warna, dan stok terbaru. Gratis ongkir untuk pembelian di atas
-          Rp300.000.
+          Tambahkan favoritmu ke keranjang lalu checkout lewat WhatsApp. Gratis ongkir untuk pembelian
+          di atas Rp300.000.
         </p>
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href="/katalog" class="tombol tombol-terang">Mulai belanja</a>
