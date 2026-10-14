@@ -1,10 +1,16 @@
 ---
+import { SITE } from '../data/site';
+
 interface Props {
   kelas?: string;
   ringkas?: boolean;
 }
 
 const { kelas = 'size-9', ringkas = false } = Astro.props;
+
+const kata = SITE.nama.trim().split(/\s+/);
+const utama = kata[0] ?? SITE.nama;
+const sekunder = kata.slice(1).join(' ');
 ---
 
 <span class:list={['inline-flex items-center gap-2.5', kelas]}>
@@ -12,7 +18,7 @@ const { kelas = 'size-9', ringkas = false } = Astro.props;
     viewBox="0 0 40 40"
     class="size-9 shrink-0"
     role="img"
-    aria-label="Logo Mekar"
+    aria-label={`Logo ${SITE.namaLengkap}`}
     fill="none"
   >
     <rect width="40" height="40" rx="12" fill="currentColor" class="text-rose-700" />
@@ -30,11 +36,13 @@ const { kelas = 'size-9', ringkas = false } = Astro.props;
     !ringkas && (
       <span class="flex flex-col leading-none">
         <span class="font-serif text-[1.35rem] font-semibold tracking-[0.18em] uppercase text-rose-900">
-          Mekar
+          {utama}
         </span>
-        <span class="mt-1 text-[0.55rem] font-medium tracking-[0.34em] uppercase text-rose-600">
-          Boutique
-        </span>
+        {sekunder && (
+          <span class="mt-1 text-[0.55rem] font-medium tracking-[0.34em] uppercase text-rose-600">
+            {sekunder}
+          </span>
+        )}
       </span>
     )
   }

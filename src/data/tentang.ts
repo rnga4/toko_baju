@@ -1,3 +1,5 @@
+import { SITE } from './site';
+
 export interface Prinsip {
   judul: string;
   teks: string;
@@ -57,8 +59,7 @@ export const tim: readonly Orang[] = [
 ];
 
 export const cerita = {
-  pendahuluan:
-    'Mekar berdiri tahun 2021. Berawal dari satu mesin jahit di ruang tamu rumah nenek di Cikutra, modal awalnya nol: bahan dibeli dari Pasar Caringin, utamanya dijahit satu per satu untuk anak kos sekitar.',
+  pendahuluan: `${SITE.nama} berdiri tahun 2021. Berawal dari satu mesin jahit di ruang tamu rumah nenek di Cikutra, modal awalnya nol: bahan dibeli dari Pasar Caringin, utamanya dijahit satu per satu untuk anak kos sekitar.`,
   isi: 'Lima tahun kemudian cara kerjanya tetap sama. Bahan dibeli langsung ke tempat asalnya, dijahit di ruang kerja kecil kami sendiri, lalu difoto sendiri tanpa filter yang membuat warna tidak realistis. Yang berubah hanya jumlah mesinnya.',
   langkah: [
     { judul: 'Cari bahan', teks: 'Ke Pasar Caringin dan workshop pewarnaan lokal, pilih kain yang belum dipakai vendor lain.' },
