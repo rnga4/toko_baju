@@ -1,0 +1,58 @@
+---
+import { SITE } from '../data/site';
+
+interface Props {
+  judul?: string;
+  deskripsi?: string;
+  path: string;
+  gambar?: string;
+  tipe?: 'website' | 'article' | 'product';
+  tanpaIndex?: boolean;
+}
+
+const {
+  judul = SITE.namaLengkap,
+  deskripsi = SITE.deskripsi,
+  path,
+  gambar,
+  tipe = 'website',
+  tanpaIndex = false,
+} = Astro.props;
+
+const canonical = new URL(path, Astro.site ?? 'http://localhost:8095').href;
+const urlGambar = gambar
+  ? new URL(gambar, Astro.site ?? 'http://localhost:8095').href
+  : new URL('/img/og-default.png', Astro.site ?? 'http://localhost:8095').href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{judul}</title>
+<meta name="description" content={deskripsi} />
+<link rel="canonical" href={canonical} />
+{tanpaIndex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
+
+<meta property="og:type" content={tipe} />
+<meta property="og:site_name" content={SITE.namaLengkap} />
+<meta property="og:locale" content={SITE.bahasa} />
+<meta property="og:title" content={judul} />
+<meta property="og:description" content={deskripsi} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={urlGambar} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={judul} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={judul} />
+<meta name="twitter:description" content={deskripsi} />
+<meta name="twitter:image" content={urlGambar} />
+
+<meta name="theme-color" content="#8c3a4a" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#2a161a" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="alternate" type="application/rss+xml" title={`${SITE.namaLengkap} — Kabar Baru`} href="/rss.xml" />

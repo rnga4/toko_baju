@@ -1,0 +1,25 @@
+{
+  "name": "Mekar Boutique",
+  "short_name": "Mekar",
+  "description": "Toko busana wanita: dress, gamis, blouse, kemeja, dan outerwear dengan bahan premium, dikirim dari Bandung.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fdfaf6",
+  "theme_color": "#8c3a4a",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

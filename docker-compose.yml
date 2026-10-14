@@ -1,0 +1,96 @@
+# Komposisi utama: web (nginx statis) + proxy (nginx).
+
+name: toko-baju
+
+services:
+  # Situs statis hasil build Astro, disajikan nginx:alpine ringan.
+  # Tidak expose port ke host — hanya bisa diakses dari dalam network.
+  web:
+    build:
+      context: .
+      args:
+        SITE_URL: ${SITE_URL:-http://localhost:${PUBLIC_HTTP_PORT:-8095}}
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/run:uid=101,gid=101,mode=0755
+      - /var/cache/nginx:uid=101,gid=101,mode=0755
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - NET_BIND_SERVICE
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - internal
+
+  # Reverse proxy publik: satu-satunya pintu masuk dari luar.
+  # Bind port dimasukan via .env agar tidak bentrok dengan service lain.
+  proxy:
+    build:
+      context: ./nginx/proxy
+    image: toko-baju-proxy:latest
+    restart: unless-stopped
+    init: true
+    user: "101:101"
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "${PUBLIC_HTTP_PORT:-8095}:80"
+      # Aktifkan HTTPS bila port 443 di host tersedia (lepas Tailscale serve dulu):
+      # - "${PUBLIC_HTTPS_PORT:-8443}:443"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/run:uid=101,gid=101,mode=0755
+      - /var/cache/nginx:uid=101,gid=101,mode=0755
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - NET_BIND_SERVICE
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - internal
+
+  # Opsional: ekspos ke internet tanpa IP publik lewat Cloudflare Tunnel.
+  # Aktifkan dengan: docker compose --profile tunnel up -d
+  # Perlu: TUNNEL_TOKEN (zero trust tunnel) atau TUNNEL_NAME+TUNNEL_CRED_FILE.
+  tunnel:
+    image: cloudflare/cloudflared:2026.7.3
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:-}
+    command: >
+      tunnel --no-autoupdate run --token ${TUNNEL_TOKEN:-placeholder}
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge

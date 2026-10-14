@@ -1,0 +1,101 @@
+---
+import { SITE, linkWa } from '../data/site';
+import { kategori } from '../data/produk';
+import Ikon from './Ikon.astro';
+import Logo from './Logo.astro';
+
+const tahun = new Date().getFullYear();
+const sosmed = [
+  { nama: 'Instagram', href: SITE.mediaSosial.instagram, ikon: 'instagram' as const },
+  { nama: 'TikTok', href: SITE.mediaSosial.tiktok, ikon: 'tiktok' as const },
+  { nama: 'WhatsApp', href: linkWa('Halo, saya mau tanya produk.'), ikon: 'whatsapp' as const },
+];
+---
+
+<footer class="mt-24 border-t border-sand-200 bg-sand-50">
+  <div class="wadah grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+    <div>
+      <Logo />
+      <p class="mt-5 max-w-xs text-sm leading-relaxed text-sand-600">
+        {SITE.tagline} Dibuat di Bandung, dikirim ke seluruh Indonesia.
+      </p>
+      <ul class="mt-6 flex gap-2" aria-label="Media sosial">
+        {
+          sosmed.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener me"
+                class="inline-flex size-10 items-center justify-center rounded-full border border-sand-300 text-sand-600 transition-colors hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"
+                aria-label={`${SITE.namaLengkap} di ${s.nama}`}
+              >
+                <Ikon nama={s.ikon} kelas="size-4.5" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <nav aria-labelledby="ft-katalog">
+      <h2 id="ft-katalog" class="font-sans text-sm font-semibold text-sand-900">Katalog</h2>
+      <ul class="mt-4 space-y-2.5 text-sm text-sand-600">
+        {
+          kategori.map((k) => (
+            <li>
+              <a href={`/katalog/?kategori=${k.slug}`} class="transition-colors hover:text-rose-700">
+                {k.nama}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="ft-info">
+      <h2 id="ft-info" class="font-sans text-sm font-semibold text-sand-900">Informasi</h2>
+      <ul class="mt-4 space-y-2.5 text-sm text-sand-600">
+        <li><a href="/tentang" class="transition-colors hover:text-rose-700">Tentang kami</a></li>
+        <li><a href="/kontak" class="transition-colors hover:text-rose-700">Kontak &amp; lokasi</a></li>
+        <li><a href="/katalog" class="transition-colors hover:text-rose-700">Semua produk</a></li>
+        <li><a href="/kontak#faq" class="transition-colors hover:text-rose-700">Pertanyaan umum</a></li>
+        <li><a href="/rss.xml" class="transition-colors hover:text-rose-700">Kabar baru (RSS)</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-sans text-sm font-semibold text-sand-900">Kunjungi store</h2>
+      <address class="mt-4 space-y-3 text-sm text-sand-600 not-italic">
+        <p class="flex gap-2.5">
+          <Ikon nama="lokasi" kelas="mt-0.5 size-4 shrink-0 text-rose-400" />
+          <span>{SITE.alamat}</span>
+        </p>
+        <p class="flex gap-2.5">
+          <Ikon nama="jam" kelas="mt-0.5 size-4 shrink-0 text-rose-400" />
+          <span>{SITE.jamBuka[0]?.hari}: {SITE.jamBuka[0]?.jam}</span>
+        </p>
+        <p class="flex gap-2.5">
+          <Ikon nama="telepon" kelas="mt-0.5 size-4 shrink-0 text-rose-400" />
+          <a href={`tel:${SITE.telepon.replace(/\s/g, '')}`} class="transition-colors hover:text-rose-700">
+            {SITE.telepon}
+          </a>
+        </p>
+        <p class="flex gap-2.5">
+          <Ikon nama="email" kelas="mt-0.5 size-4 shrink-0 text-rose-400" />
+          <a href={`mailto:${SITE.email}`} class="transition-colors hover:text-rose-700">{SITE.email}</a>
+        </p>
+      </address>
+    </div>
+  </div>
+
+  <div class="border-t border-sand-200">
+    <div class="wadah flex flex-col gap-3 py-6 text-xs text-sand-600 sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {tahun} {SITE.namaLengkap}. Seluruh hak cipta dilindungi.</p>
+      <p>
+        Dibangun dengan <span class="font-medium text-sand-700">Astro</span> &amp;
+        <span class="font-medium text-sand-700">Tailwind CSS</span>
+      </p>
+    </div>
+  </div>
+</footer>

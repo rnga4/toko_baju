@@ -1,0 +1,111 @@
+---
+import { SITE, urlAbsolut } from '../data/site';
+import Meta from '../components/Meta.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  judul?: string;
+  deskripsi?: string;
+  path?: string;
+  gambar?: string;
+  tipe?: 'website' | 'article' | 'product';
+  tanpaIndex?: boolean;
+  kelasBody?: string;
+  skema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  judul = `${SITE.namaLengkap} — ${SITE.tagline}`,
+  deskripsi = SITE.deskripsi,
+  path = Astro.url.pathname,
+  gambar,
+  tipe = 'website',
+  tanpaIndex = false,
+  kelasBody = '',
+  skema,
+} = Astro.props;
+
+const situs = Astro.site ?? new URL('http://localhost:8095');
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ClothingStore',
+    '@id': `${situs.origin}/#toko`,
+    name: SITE.namaLengkap,
+    description: SITE.deskripsi,
+    url: urlAbsolut('/', situs),
+    telephone: SITE.telepon,
+    email: SITE.email,
+    image: urlAbsolut('/img/og-default.png', situs),
+    logo: urlAbsolut('/logo.png', situs),
+    priceRange: 'Rp159.000 - Rp495.000',
+    currenciesAccepted: 'IDR',
+    paymentAccepted: 'Tunai, Transfer Bank, E-Wallet, COD',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: SITE.alamat,
+      addressLocality: 'Bandung',
+      addressRegion: 'Jawa Barat',
+      postalCode: '40124',
+      addressCountry: 'ID',
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: -6.8915, longitude: 107.6186 },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '09:00',
+        closes: '20:00',
+      },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: 'Saturday',
+        opens: '09:00',
+        closes: '17:00',
+      },
+    ],
+    sameAs: [SITE.mediaSosial.instagram, SITE.mediaSosial.tiktok],
+  },
+  ...(skema ? (Array.isArray(skema) ? skema : [skema]) : []),
+];
+---
+
+<!doctype html>
+<html lang="id" data-tema="minimalis">
+  <head>
+    <script is:inline>
+      // Tema default: minimalis. Hanya lepas ke klasik bila tersimpan.
+      // Dijalankan sebelum paint supaya tidak berkedip.
+      (() => {
+        try {
+          if (localStorage.getItem('tema') === 'klasik') {
+            delete document.documentElement.dataset.tema;
+          }
+        } catch {
+          /* abaikan */
+        }
+      })();
+    </script>
+    <Meta
+      judul={judul}
+      deskripsi={deskripsi}
+      path={path}
+      gambar={gambar}
+      tipe={tipe}
+      tanpaIndex={tanpaIndex}
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+  <body class:list={['min-h-dvh bg-kertas antialiased', kelasBody]}>
+    <Header />
+
+    <main id="konten">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

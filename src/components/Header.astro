@@ -1,0 +1,179 @@
+---
+import { NAVIGASI, SITE, linkWa } from '../data/site';
+import Ikon from './Ikon.astro';
+import Logo from './Logo.astro';
+
+const pathSekarang = Astro.url.pathname.replace(/\/$/, '') || '/';
+const aktif = (href: string) => href === pathSekarang;
+---
+
+<a
+  href="#konten"
+  class="sr-only rounded-full bg-rose-800 px-4 py-2 text-sm text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-100"
+>
+  Lewati ke konten utama
+</a>
+
+<header
+  class="sticky top-0 z-50 border-b border-sand-200/80 bg-kertas/85 backdrop-blur-md supports-[backdrop-filter]:bg-kertas/70"
+>
+  <div class="wadah flex h-18 items-center justify-between gap-6">
+    <a href="/" class="shrink-0 rounded-lg" aria-label={`${SITE.namaLengkap} — beranda`}>
+      <Logo />
+    </a>
+
+    <nav class="hidden items-center gap-8 md:flex" aria-label="Navigasi utama">
+      {
+        NAVIGASI.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'garis-bawah text-sm font-medium transition-colors',
+              aktif(item.href)
+                ? 'text-rose-800'
+                : 'text-sand-700 hover:text-rose-700',
+            ]}
+            aria-current={aktif(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href="/katalog#cari"
+        class="hidden size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700 sm:inline-flex"
+        aria-label="Cari produk"
+      >
+        <Ikon nama="cari" kelas="size-5" />
+      </a>
+
+      <button
+        type="button"
+        data-tema-tombol
+        class="inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700"
+        aria-label="Ganti tema warna"
+        aria-pressed="false"
+        title="Ganti tema warna"
+      >
+        <Ikon nama="tema" kelas="size-5" />
+      </button>
+
+      <a href={linkWa()} class="tombol tombol-utama hidden sm:inline-flex" target="_blank" rel="noopener">
+        <Ikon nama="whatsapp" kelas="size-4" />
+        Pesan via WhatsApp
+      </a>
+
+      <button
+        type="button"
+        class="inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700 md:hidden"
+        aria-label="Buka menu"
+        aria-expanded="false"
+        aria-controls="menu-mobile"
+        data-menu-tombol
+      >
+        <Ikon nama="menu" kelas="size-6" />
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-mobile" class="hidden border-t border-sand-200 bg-kertas md:hidden" data-menu-panel>
+    <nav class="wadah flex flex-col gap-1 py-4" aria-label="Navigasi seluler">
+      {
+        NAVIGASI.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
+              aktif(item.href) ? 'bg-rose-50 text-rose-800' : 'text-sand-700 hover:bg-sand-100',
+            ]}
+            aria-current={aktif(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={linkWa()} class="tombol tombol-utama mt-3 w-full" target="_blank" rel="noopener">
+        <Ikon nama="whatsapp" kelas="size-4" />
+        Pesan via WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<div
+  class="bg-rose-900 py-2.5 text-center text-[0.8125rem] text-rose-50"
+  role="region"
+  aria-label="Promo berjalan"
+>
+  <p class="wadah flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+    <span class="label bg-champagne-300 text-rose-950">Promo</span>
+    <span>Gratis ongkir se-Indonesia untuk minimal Rp300.000</span>
+    <a href="/katalog" class="underline underline-offset-4 transition-colors hover:text-champagne-200">
+      Belanja sekarang
+    </a>
+  </p>
+</div>
+
+<script>
+  const tombol = document.querySelector<HTMLButtonElement>('[data-menu-tombol]');
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+
+  const tutupMenu = () => {
+    tombol?.setAttribute('aria-expanded', 'false');
+    tombol?.setAttribute('aria-label', 'Buka menu');
+    panel?.classList.add('hidden');
+    document.body.style.removeProperty('overflow');
+  };
+
+  tombol?.addEventListener('click', () => {
+    const terbuka = tombol.getAttribute('aria-expanded') === 'true';
+    tombol.setAttribute('aria-expanded', String(!terbuka));
+    tombol.setAttribute('aria-label', terbuka ? 'Buka menu' : 'Tutup menu');
+    panel?.classList.toggle('hidden', terbuka);
+    document.body.style.overflow = terbuka ? '' : 'hidden';
+  });
+
+  panel?.querySelectorAll('a').forEach((tautan) => tautan.addEventListener('click', tutupMenu));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') tutupMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Node)) return;
+    if (panel && !panel.classList.contains('hidden') && !panel.contains(e.target) && !tombol?.contains(e.target)) {
+      tutupMenu();
+    }
+  });
+
+  // --- Pengalih tema warna ---
+  const tombolTema = document.querySelector<HTMLButtonElement>('[data-tema-tombol]');
+  const NAMA_TEMA: Record<string, string> = { klasik: 'Klasik', minimalis: 'Minimalis Modern' };
+  const temaAktif = () =>
+    document.documentElement.dataset.tema === 'minimalis' ? 'minimalis' : 'klasik';
+
+  const pasangTema = (tema: string) => {
+    if (tema === 'minimalis') document.documentElement.dataset.tema = 'minimalis';
+    else delete document.documentElement.dataset.tema;
+    try {
+      localStorage.setItem('tema', tema);
+    } catch {
+      /* localStorage tidak tersedia — abaikan */
+    }
+    if (tombolTema) {
+      const berikut = tema === 'minimalis' ? 'klasik' : 'minimalis';
+      tombolTema.setAttribute('aria-pressed', String(tema === 'minimalis'));
+      tombolTema.setAttribute('aria-label', `Tema ${NAMA_TEMA[tema]}. Ganti ke tema ${NAMA_TEMA[berikut]}.`);
+      tombolTema.setAttribute('title', `Tema: ${NAMA_TEMA[tema]}`);
+    }
+  };
+
+  pasangTema(temaAktif());
+
+  tombolTema?.addEventListener('click', () => {
+    pasangTema(temaAktif() === 'minimalis' ? 'klasik' : 'minimalis');
+  });
+</script>

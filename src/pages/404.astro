@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ikon from '../components/Ikon.astro';
+import { SITE } from '../data/site';
+import { produkBaru } from '../data/produk';
+import ProdukCard from '../components/ProdukCard.astro';
+---
+
+<BaseLayout
+  judul={`Halaman tidak ditemukan — 404 | ${SITE.namaLengkap}`}
+  deskripsi="Halaman yang kamu cari tidak ada atau sudah dipindah. Lihat katalog produk terbaru kami."
+  path="/404"
+  tanpaIndex
+>
+  <section class="wadah grid items-center gap-12 py-20 text-center sm:py-28">
+    <div class="mx-auto">
+      <p class="font-serif text-8xl font-semibold text-rose-200 sm:text-9xl" aria-hidden="true">404</p>
+      <h1 class="mt-4 text-2xl text-balance sm:text-3xl">Halaman ini nggak ketemu</h1>
+      <p class="mx-auto mt-4 max-w-md text-[0.9375rem] leading-relaxed text-sand-600">
+        Tautan mungkin salah, atau produk yang kamu cari sudah tidak ditampilkan. Coba mulai dari beranda
+        atau telusuri katalog terbaru.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="/" class="tombol tombol-utama">
+          <Ikon nama="lokasi" kelas="size-4" />
+          Kembali ke beranda
+        </a>
+        <a href="/katalog" class="tombol tombol-sekunder">Lihat katalog</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wadah pb-20" aria-labelledby="jdl-404">
+    <h2 id="jdl-404" class="wadah text-xl text-sand-900 sm:text-[1.5rem]">Sambil di sini, cek ini dulu</h2>
+    <ul class="wadah mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+      {produkBaru.slice(0, 4).map((p) => (
+        <li><ProdukCard produk={p} /></li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

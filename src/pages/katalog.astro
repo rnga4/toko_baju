@@ -1,0 +1,464 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ikon from '../components/Ikon.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ProdukCard from '../components/ProdukCard.astro';
+import TombolWa from '../components/TombolWa.astro';
+import { SITE, linkWa } from '../data/site';
+import { kategori, semuaProduk, produkPromo } from '../data/produk';
+import { angka, rupiah } from '../lib/format';
+
+const q = Astro.url.searchParams.get('q')?.trim() ?? '';
+const kat = Astro.url.searchParams.get('kategori')?.trim() ?? 'semua';
+const badge = Astro.url.searchParams.get('badge')?.trim() ?? 'semua';
+const hargaMaks = Number(Astro.url.searchParams.get('harga') ?? 0) || undefined;
+
+const biaya: { label: string; value: number | null; ket: string }[] = [
+  { label: 'Regular (2-4 hari)', value: 15000, ket: 'Seluruh Indonesia' },
+  { label: 'Kilat (1-2 hari)', value: 35000, ket: 'Jabodetabek, Bandung, Surabaya' },
+  { label: 'Gratis ongkir', value: null, ket: `Min. belanja ${rupiah(SITE.gratisOngkirMinimal)}` },
+];
+
+const urutOpsi = [
+  { label: 'Terbaru', value: 'terbaru' },
+  { label: 'Harga terendah', value: 'termurah' },
+  { label: 'Harga tertinggi', value: 'termahal' },
+  { label: 'Paling laris', value: 'laris' },
+  { label: 'Rating tertinggi', value: 'rating' },
+];
+
+const hargaOpsi = [
+  { label: 'Semua harga', value: '' },
+  { label: 'Di bawah Rp200.000', value: '200000' },
+  { label: 'Di bawah Rp300.000', value: '300000' },
+  { label: 'Di bawah Rp400.000', value: '400000' },
+  { label: 'Di bawah Rp500.000', value: '500000' },
+];
+
+const urut = Astro.url.searchParams.get('urut') ?? 'terbaru';
+
+function buatUrl(patch: Record<string, string | undefined>): string {
+  const sp = new URLSearchParams();
+  const merged = { q, kategori: kat, badge, urut, harga: hargaMaks ? String(hargaMaks) : undefined, ...patch };
+  for (const [k, v] of Object.entries(merged)) {
+    if (v && v !== 'semua' && v !== 'terbaru') sp.set(k, v);
+  }
+  const qs = sp.toString();
+  return qs ? `/katalog/?${qs}` : '/katalog/';
+}
+
+const jumlahFilter = [kat !== 'semua', badge !== 'semua', Boolean(hargaMaks)].filter(Boolean).length;
+const total = semuaProduk.length;
+---
+
+<BaseLayout
+  judul={`Katalog Busana Wanita | ${SITE.namaLengkap}`}
+  deskripsi={`Belanja ${total} produk busana wanita dari ${SITE.namaLengkap}: dress, gamis, blouse, kemeja, kulot, dan outerwear. Harga ${rupiah(159000)} ke atas, gratis ongkir di atas Rp300.000.`}
+  path="/katalog"
+>
+  <div class="wadah pt-6">
+    <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Katalog' }]} />
+  </div>
+
+  <header class="wadah pt-6 pb-10">
+    <h1 class="text-[2rem] leading-tight text-balance sm:text-[2.75rem]">Katalog</h1>
+    <p class="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-sand-600 sm:text-base">
+      {angka(total)} produk siap kirim dari Bandung. Saring sesuai kategori, cari nama bahan, atau lihat
+      yang sedang promo.
+    </p>
+  </header>
+
+  <!-- Filter + urutan -->
+  <div class="sticky top-18 z-30 border-y border-sand-200 bg-kertas/90 backdrop-blur-md">
+    <form
+      method="get"
+      action="/katalog"
+      class="wadah flex flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between"
+    >
+      <div class="flex items-center gap-2 lg:flex-1">
+        <div class="relative flex-1 lg:max-w-xs">
+          <label for="cari" class="sr-only">Cari produk</label>
+          <Ikon
+            nama="cari"
+            kelas="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-sand-600"
+          />
+          <input
+            type="search"
+            id="cari"
+            name="q"
+            value={q}
+            placeholder="Cari nama produk atau bahan…"
+            class="w-full rounded-full border border-sand-200 bg-white py-2.5 pr-4 pl-10 text-sm text-sand-800 transition-colors placeholder:text-sand-600 focus:border-rose-300 focus:outline-none"
+          />
+        </div>
+
+        <button
+          type="button"
+          data-filter-tombol
+          aria-expanded="false"
+          aria-controls="filter-panel"
+          class="tombol tombol-sekunder shrink-0 py-2.5 lg:hidden"
+        >
+          <Ikon nama="saring" kelas="size-4" />
+          Filter
+          <span
+            data-jumlah-filter
+            hidden={jumlahFilter === 0}
+            class="inline-flex size-5 items-center justify-center rounded-full bg-rose-700 text-xs font-semibold text-white"
+          >
+            {jumlahFilter}
+          </span>
+        </button>
+      </div>
+
+      <div
+        id="filter-panel"
+        data-filter-panel
+        class="hidden flex-col gap-3 lg:flex lg:flex-row lg:flex-wrap lg:items-center lg:gap-2"
+      >
+        <label for="kategori" class="sr-only">Kategori</label>
+        <select
+          id="kategori"
+          name="kategori"
+          class="rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm text-sand-800 focus:border-rose-300 focus:outline-none"
+        >
+          <option value="semua" selected={kat === 'semua'}>Semua kategori</option>
+          {
+            kategori.map((k) => (
+              <option value={k.slug} selected={kat === k.slug}>
+                {k.nama}
+              </option>
+            ))
+          }
+        </select>
+
+        <label for="badge" class="sr-only">Label</label>
+        <select
+          id="badge"
+          name="badge"
+          class="rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm text-sand-800 focus:border-rose-300 focus:outline-none"
+        >
+          <option value="semua" selected={badge === 'semua'}>Semua label</option>
+          <option value="Baru" selected={badge === 'Baru'}>Baru</option>
+          <option value="Terlaris" selected={badge === 'Terlaris'}>Terlaris</option>
+          <option value="Promo" selected={badge === 'Promo'}>Promo</option>
+        </select>
+
+        <label for="harga" class="sr-only">Rentang harga</label>
+        <select
+          id="harga"
+          name="harga"
+          class="rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm text-sand-800 focus:border-rose-300 focus:outline-none"
+        >
+          {
+            hargaOpsi.map((h) => (
+              <option value={h.value} selected={(hargaMaks ? String(hargaMaks) : '') === h.value}>
+                {h.label}
+              </option>
+            ))
+          }
+        </select>
+
+        <label for="urut" class="sr-only">Urutkan</label>
+        <select
+          id="urut"
+          name="urut"
+          class="rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm text-sand-800 focus:border-rose-300 focus:outline-none"
+        >
+          {urutOpsi.map((o) => <option value={o.value} selected={urut === o.value}>{o.label}</option>)}
+        </select>
+
+        <div class="flex gap-2">
+          <button type="submit" class="tombol tombol-utama flex-1 py-2.5 lg:flex-none">Terapkan</button>
+          <a href="/katalog/" data-reset hidden class="tombol tombol-sekunder py-2.5"> Reset </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="wadah grid gap-10 py-10 lg:grid-cols-[16rem_1fr] lg:gap-12">
+    <!-- Sidebar -->
+    <aside class="hidden lg:block" aria-label="Saring katalog">
+      <div class="sticky top-36 space-y-8">
+        <div>
+          <h2 class="font-sans text-xs font-semibold tracking-[0.12em] text-sand-600 uppercase">
+            Kategori
+          </h2>
+          <ul class="mt-3.5 space-y-1">
+            <li>
+              <a
+                href={buatUrl({ kategori: 'semua' })}
+                class:list={[
+                  'flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
+                  kat === 'semua' ? 'bg-rose-50 font-medium text-rose-800' : 'text-sand-600 hover:bg-sand-100',
+                ]}
+                aria-current={kat === 'semua' ? 'true' : undefined}
+              >
+                Semua produk
+                <span class="text-xs text-sand-600">{total}</span>
+              </a>
+            </li>
+            {
+              kategori.map((k) => {
+                const jml = semuaProduk.filter((p) => p.kategori === k.slug).length;
+                return (
+                  <li>
+                    <a
+                      href={buatUrl({ kategori: k.slug })}
+                      class:list={[
+                        'flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
+                        kat === k.slug
+                          ? 'bg-rose-50 font-medium text-rose-800'
+                          : 'text-sand-600 hover:bg-sand-100',
+                      ]}
+                      aria-current={kat === k.slug ? 'true' : undefined}
+                    >
+                      {k.nama}
+                      <span class="text-xs text-sand-600">{jml}</span>
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="font-sans text-xs font-semibold tracking-[0.12em] text-sand-600 uppercase">
+            Promo
+          </h2>
+          <ul class="mt-3.5 space-y-1">
+            {
+              produkPromo.map((p) => (
+                <li>
+                  <a
+                    href={`/produk/${p.slug}`}
+                    class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-sand-600 transition-colors hover:bg-sand-100"
+                  >
+                    <Ikon nama="tag" kelas="size-3.5 shrink-0 text-rose-400" />
+                    <span class="truncate">{p.nama}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="rounded-besar border border-sand-200 bg-sand-50 p-5">
+          <h2 class="font-sans text-sm font-semibold text-sand-900">Butuh bantuan pilih ukuran?</h2>
+          <p class="mt-1.5 text-xs leading-relaxed text-sand-600">
+            Kirim tinggi dan berat badan, kami sarankan ukuran yang paling pas.
+          </p>
+          <a href={linkWa('Halo, boleh bantu rekomendasi ukuran?')} target="_blank" rel="noopener" class="tombol tombol-sekunder mt-4 w-full py-2.5 text-sm">
+            Tanya admin
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Hasil -->
+    <div>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <p class="text-sm text-sand-600" role="status" data-status>
+          Menampilkan <span class="font-semibold text-sand-900" data-jumlah>{total}</span> dari {total} produk
+          <span class="text-sand-600" data-ringkas hidden></span>
+        </p>
+        <a
+          href="/katalog/"
+          data-reset
+          hidden
+          class="text-sm text-rose-700 underline underline-offset-4 hover:text-rose-900"
+        >
+          Reset filter
+        </a>
+      </div>
+
+      <ul class="mt-8 grid grid-cols-2 gap-4 sm:gap-6 xl:grid-cols-3" data-grid>
+        {
+          semuaProduk.map((p, i) => (
+            <li
+              data-kartu
+              data-kategori={p.kategori}
+              data-badge={p.badge ?? ''}
+              data-harga={p.harga}
+              data-terjual={p.terjual}
+              data-rating={p.rating}
+              data-tanggal={p.tanggalMasuk}
+              data-cari={[p.nama, p.bahan, p.ringkas, p.kategori, ...p.warna].join(' ').toLowerCase()}
+            >
+              <ProdukCard produk={p} prioritas={i < 3} />
+            </li>
+          ))
+        }
+      </ul>
+
+      <div
+        class="mt-10 rounded-besar border border-dashed border-sand-300 px-6 py-16 text-center"
+        data-kosong
+        hidden
+      >
+        <Ikon nama="cari" kelas="mx-auto size-10 text-sand-500" />
+        <p class="mt-4 font-serif text-xl text-sand-900">Produknya belum ketemu</p>
+        <p class="mx-auto mt-2 max-w-sm text-sm text-sand-600">
+          Coba kata kunci lain atau hapus filter yang aktif. Semua koleksi juga bisa dilihat langsung di store.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="/katalog/" class="tombol tombol-utama">Lihat semua produk</a>
+          <a
+            href={linkWa('Halo, saya cari produk yang belum ada di katalog.')}
+            target="_blank"
+            rel="noopener"
+            class="tombol tombol-sekunder"
+          >
+            Tanya produk lain
+          </a>
+        </div>
+      </div>
+
+      <!-- Info ongkir -->
+      <section class="mt-16 rounded-besar border border-sand-200 bg-sand-50 p-6 sm:p-8" aria-labelledby="jdl-ongkir">
+        <h2 id="jdl-ongkir" class="text-lg font-semibold text-sand-900">Pilihan pengiriman</h2>
+        <ul class="mt-5 grid gap-4 sm:grid-cols-3">
+          {
+            biaya.map((b) => (
+              <li class="rounded-xl bg-white p-4">
+                <p class="text-sm font-semibold text-sand-900">{b.label}</p>
+                <p class="mt-1 font-serif text-xl text-rose-800">
+                  {b.value === null ? 'Gratis' : rupiah(b.value)}
+                </p>
+                <p class="mt-1.5 text-xs text-sand-600">{b.ket}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <TombolWa />
+</BaseLayout>
+
+<script>
+  const tombolFilter = document.querySelector<HTMLButtonElement>('[data-filter-tombol]');
+  const panelFilter = document.querySelector<HTMLElement>('[data-filter-panel]');
+  const formFilter = panelFilter?.closest('form');
+  const grid = document.querySelector<HTMLElement>('[data-grid]');
+  const kosong = document.querySelector<HTMLElement>('[data-kosong]');
+  const jumlahEl = document.querySelector<HTMLElement>('[data-jumlah]');
+  const ringkasEl = document.querySelector<HTMLElement>('[data-ringkas]');
+  const resetEl = Array.from(document.querySelectorAll<HTMLElement>('[data-reset]'));
+  const badgeFilter = document.querySelector<HTMLElement>('[data-jumlah-filter]');
+  const kartu = grid ? Array.from(grid.querySelectorAll<HTMLElement>('[data-kartu]')) : [];
+
+  tombolFilter?.addEventListener('click', () => {
+    const terbuka = tombolFilter.getAttribute('aria-expanded') === 'true';
+    tombolFilter.setAttribute('aria-expanded', String(!terbuka));
+    panelFilter?.classList.toggle('hidden', terbuka);
+    panelFilter?.classList.toggle('flex', !terbuka);
+  });
+
+  const namaKategori = (slug: string) =>
+    document.querySelector<HTMLOptionElement>(`#kategori option[value="${slug}"]`)?.textContent?.trim() ?? slug;
+
+  function terapkan() {
+    const sp = new URLSearchParams(location.search);
+    const q = (sp.get('q') ?? '').trim();
+    const kategori = sp.get('kategori') ?? 'semua';
+    const badge = sp.get('badge') ?? 'semua';
+    const harga = Number(sp.get('harga') ?? 0) || 0;
+    const urut = sp.get('urut') ?? 'terbaru';
+    const ql = q.toLowerCase();
+
+    const inputCari = document.getElementById('cari');
+    if (inputCari instanceof HTMLInputElement) inputCari.value = q;
+    const atur = (id: string, v: string) => {
+      const el = document.getElementById(id);
+      if (el instanceof HTMLSelectElement) el.value = v;
+    };
+    atur('kategori', kategori);
+    atur('badge', badge);
+    atur('harga', harga ? String(harga) : '');
+    atur('urut', urut);
+
+    let tampil = 0;
+    for (const k of kartu) {
+      const cocok =
+        (kategori === 'semua' || k.dataset.kategori === kategori) &&
+        (badge === 'semua' || k.dataset.badge === badge) &&
+        (!harga || Number(k.dataset.harga) <= harga) &&
+        (!ql || (k.dataset.cari ?? '').includes(ql));
+      k.hidden = !cocok;
+      if (cocok) tampil++;
+    }
+
+    const terlihat = kartu.filter((k) => !k.hidden);
+    terlihat.sort((a, b) => {
+      const da = a.dataset;
+      const db = b.dataset;
+      switch (urut) {
+        case 'termurah':
+          return Number(da.harga) - Number(db.harga);
+        case 'termahal':
+          return Number(db.harga) - Number(da.harga);
+        case 'laris':
+          return Number(db.terjual) - Number(da.terjual);
+        case 'rating':
+          return Number(db.rating) - Number(da.rating);
+        default:
+          return (db.tanggal ?? '').localeCompare(da.tanggal ?? '');
+      }
+    });
+    if (grid) for (const k of terlihat) grid.appendChild(k);
+
+    if (jumlahEl) jumlahEl.textContent = String(tampil);
+    const adaFilter = Boolean(q) || kategori !== 'semua' || badge !== 'semua' || Boolean(harga);
+    for (const el of resetEl) el.hidden = !adaFilter;
+    if (badgeFilter) {
+      const jml = [kategori !== 'semua', badge !== 'semua', Boolean(harga)].filter(Boolean).length;
+      badgeFilter.textContent = String(jml);
+      badgeFilter.hidden = jml === 0;
+    }
+    if (ringkasEl) {
+      const bagian: string[] = [];
+      if (q) bagian.push(`kata kunci “${q}”`);
+      if (kategori !== 'semua') bagian.push(namaKategori(kategori));
+      ringkasEl.textContent = bagian.length ? ` · ${bagian.join(' · ')}` : '';
+      ringkasEl.hidden = bagian.length === 0;
+    }
+    if (grid) grid.hidden = tampil === 0;
+    if (kosong) kosong.hidden = tampil !== 0;
+  }
+
+  formFilter?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(formFilter);
+    const sp = new URLSearchParams();
+    const qv = String(fd.get('q') ?? '').trim();
+    const kv = String(fd.get('kategori') ?? 'semua');
+    const bv = String(fd.get('badge') ?? 'semua');
+    const hv = String(fd.get('harga') ?? '');
+    const uv = String(fd.get('urut') ?? 'terbaru');
+    if (qv) sp.set('q', qv);
+    if (kv && kv !== 'semua') sp.set('kategori', kv);
+    if (bv && bv !== 'semua') sp.set('badge', bv);
+    if (hv) sp.set('harga', hv);
+    if (uv && uv !== 'terbaru') sp.set('urut', uv);
+    const qs = sp.toString();
+    history.replaceState(null, '', qs ? `/katalog/?${qs}` : '/katalog/');
+    terapkan();
+  });
+
+  formFilter?.querySelectorAll('select').forEach((pilih) =>
+    pilih.addEventListener('change', () => formFilter.requestSubmit()),
+  );
+
+  terapkan();
+
+  if (location.hash === '#cari') {
+    const input = document.getElementById('cari');
+    if (input instanceof HTMLInputElement) {
+      input.focus();
+      input.scrollIntoView({ block: 'center' });
+    }
+  }
+</script>

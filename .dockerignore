@@ -1,0 +1,26 @@
+# Cache & build output
+node_modules/
+dist/
+.astro/
+
+# Sumber foto mentah (tidak dibutuhkan saat build image)
+baju/
+
+# Git & editor
+.git/
+.gitignore
+*.log
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Local env
+.env
+.env.*
+!.env.example
+
+# Docker
+.dockerignore
+docker-compose*.yml
+compose*.yaml

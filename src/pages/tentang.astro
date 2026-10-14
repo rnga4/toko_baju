@@ -1,0 +1,213 @@
+---
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ikon from '../components/Ikon.astro';
+import SectionJudul from '../components/SectionJudul.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import TombolWa from '../components/TombolWa.astro';
+import { SITE } from '../data/site';
+import { produkBaru } from '../data/produk';
+import { cerita, prinsip, tim, nilai } from '../data/tentang';
+---
+
+<BaseLayout
+  judul={`Tentang ${SITE.namaLengkap} — Cerita di balik busana kami`}
+  deskripsi={`Kenalan dengan ${SITE.namaLengkap}, brand busana wanita dari Bandung yang mengerjakan dress, gamis, blouse, dan kemeja dengan bahan pilihan serta jahitan rangkap.`}
+  path="/tentang"
+>
+  <div class="wadah pt-6">
+    <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Tentang' }]} />
+  </div>
+
+  <!-- Hero -->
+  <section class="wadah grid items-center gap-12 py-14 lg:grid-cols-2 lg:gap-20 lg:py-20">
+    <div>
+      <p class="label bg-rose-100 text-rose-800">Cerita kami</p>
+      <h1 class="mt-6 text-[2.25rem] leading-[1.12] text-balance sm:text-[2.75rem] lg:text-[3.25rem]">
+        Bermula dari satu mesin jahit di ruang tamu rumah di Bandung.
+      </h1>
+      <p class="mt-6 text-base leading-relaxed text-sand-600">{cerita.pendahuluan}</p>
+      <p class="mt-4 text-base leading-relaxed text-sand-600">{cerita.isi}</p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/katalog" class="tombol tombol-utama">Lihat koleksi kami</a>
+        <a href="/kontak" class="tombol tombol-sekunder">Kunjungi store</a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4" aria-hidden="true">
+      <div class="space-y-4 pt-8">
+        {
+          produkBaru.slice(0, 2).map((p) => (
+            <div class="aspect-4/5 overflow-hidden rounded-besar bg-sand-100 shadow-angkat">
+              <Image src={p.gambar} alt="" widths={[280, 420]} sizes="40vw" loading="lazy" class="size-full object-cover" />
+            </div>
+          ))
+        }
+      </div>
+      <div class="space-y-4">
+        {
+          produkBaru.slice(2, 4).map((p) => (
+            <div class="aspect-4/5 overflow-hidden rounded-besar bg-sand-100 shadow-angkat">
+              <Image src={p.gambar} alt="" widths={[280, 420]} sizes="40vw" loading="lazy" class="size-full object-cover" />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Angka -->
+  <section class="border-y border-sand-200 bg-sand-50 py-14" aria-label="Angka ringkas">
+    <dl class="wadah grid grid-cols-2 gap-8 lg:grid-cols-4">
+      {
+        nilai.map((n) => (
+          <div>
+            <dt class="text-xs tracking-[0.1em] text-sand-600 uppercase">{n.label}</dt>
+            <dd class="mt-2 font-serif text-3xl font-semibold text-rose-800 sm:text-4xl">{n.nilai}</dd>
+            <p class="mt-1.5 text-xs text-sand-600">{n.keterangan}</p>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Prinsip -->
+  <section class="wadah py-20 sm:py-24" aria-labelledby="jdl-prinsip">
+    <SectionJudul
+      judul="Empat prinsip yang tidak kami tawar"
+      label="Prinsip kerja"
+      deskripsi="Bukan slogan pemasaran saja. Empat hal ini yang menentukan apakah kami lanjut produksi atau tidak."
+    />
+
+    <ol class="mt-14 grid gap-6 md:grid-cols-2">
+      {
+        prinsip.map((a, i) => (
+          <li class="flex gap-5 rounded-besar border border-sand-200 bg-white p-7">
+            <span class="font-serif text-[2.5rem] leading-none font-semibold text-rose-200">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <div>
+              <h3 class="text-lg font-semibold text-sand-900">{a.judul}</h3>
+              <p class="mt-2.5 text-sm leading-relaxed text-sand-600">{a.teks}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Proses -->
+  <section class="bg-sand-900 py-20 text-sand-100 sm:py-24" aria-labelledby="jdl-proses">
+    <div class="wadah">
+      <SectionJudul
+        judul="Dari desain ke tangan kamu"
+        label="Proses produksi"
+        deskripsi="Satu produk membutuhkan rata-rata 14 hari dari gambar sampai siap dikirim."
+      />
+
+      <ol class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          cerita.langkah.map((s, i) => (
+            <li class="relative border-l-2 border-rose-400/40 pl-5">
+              <span class="font-mono text-xs text-rose-300">0{i + 1}</span>
+              <h3 class="mt-2 text-base font-semibold text-sand-50">{s.judul}</h3>
+              <p class="mt-1.5 text-[0.8125rem] leading-relaxed text-sand-400">{s.teks}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Tim -->
+  <section class="wadah py-20 sm:py-24" aria-labelledby="jdl-tim">
+    <SectionJudul
+      judul="Orang di balik setiap jahitan"
+      label="Tim kecil"
+      deskripsi="Bukan sekadar reseller. Tim kami semua berlatar belakang menjahit atau desain busana."
+    />
+
+    <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        tim.map((t) => (
+          <li>
+            <div class="overflow-hidden rounded-besar border border-sand-200 bg-white">
+              <div class="grid aspect-4/5 place-items-center bg-linear-to-br from-rose-100 to-champagne-100">
+                <span class="font-serif text-4xl font-semibold text-rose-300">{t.inisial}</span>
+              </div>
+              <div class="p-5">
+                <h3 class="font-semibold text-sand-900">{t.nama}</h3>
+                <p class="mt-0.5 text-xs tracking-[0.08em] text-rose-600 uppercase">{t.peran}</p>
+                <p class="mt-3 text-[0.8125rem] leading-relaxed text-sand-600">{t.bio}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Lokasi -->
+  <section class="wadah pb-20 sm:pb-24" aria-labelledby="jdl-lokasi">
+    <div class="grid items-center gap-10 rounded-besar bg-sand-50 p-8 sm:p-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <p class="label bg-rose-100 text-rose-800">Mampir saja</p>
+        <h2 id="jdl-lokasi" class="mt-5 text-[1.75rem] leading-tight text-balance sm:text-[2.25rem]">
+          Datang ke store, cobakan langsung.
+        </h2>
+        <p class="mt-4 text-[0.9375rem] leading-relaxed text-sand-600">
+          Ruangnya kecil tapi tenang. Ada ruang fitting, cermin besar, dan teh hangat yang kami seduh untuk
+          setiap pengunjung.
+        </p>
+
+        <dl class="mt-7 space-y-4 text-sm">
+          <div class="flex gap-3">
+            <Ikon nama="lokasi" kelas="mt-0.5 size-4.5 shrink-0 text-rose-600" />
+            <div>
+              <dt class="font-medium text-sand-900">Alamat</dt>
+              <dd class="text-sand-600">{SITE.alamat}</dd>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <Ikon nama="jam" kelas="mt-0.5 size-4.5 shrink-0 text-rose-600" />
+            <div>
+              <dt class="font-medium text-sand-900">Jam buka</dt>
+              <dd class="text-sand-600">
+                {
+                  SITE.jamBuka.map((j) => (
+                    <span class="block">{j.hari}: {j.jam}</span>
+                  ))
+                }
+              </dd>
+            </div>
+          </div>
+        </dl>
+
+        <a
+          href="https://maps.google.com/?q=Cikutra+Baru+Bandung"
+          target="_blank"
+          rel="noopener"
+          class="tombol tombol-utama mt-8"
+        >
+          Buka di Google Maps
+          <Ikon nama="panah" kelas="size-4" />
+        </a>
+      </div>
+
+      <div
+        class="grid aspect-4/3 place-items-center rounded-besar border border-sand-200 bg-linear-to-br from-rose-50 to-champagne-100"
+        aria-hidden="true"
+      >
+        <div class="text-center">
+          <Ikon nama="lokasi" kelas="mx-auto size-12 text-rose-300" />
+          <p class="mt-4 font-serif text-lg text-rose-800">Cikutra Baru</p>
+          <p class="mt-1 text-xs text-rose-400">{SITE.lokasi}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <TombolWa />
+</BaseLayout>

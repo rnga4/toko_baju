@@ -1,0 +1,395 @@
+---
+import { Image } from 'astro:assets';
+import type { GetStaticPaths } from 'astro';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Ikon from '../../components/Ikon.astro';
+import Bintang from '../../components/Bintang.astro';
+import ProdukCard from '../../components/ProdukCard.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import TombolWa from '../../components/TombolWa.astro';
+import { SITE, linkWa } from '../../data/site';
+import {
+  semuaProduk,
+  cariProduk,
+  hargaTercoret,
+  persenDiskon,
+  type Produk,
+} from '../../data/produk';
+import { rupiah, rupiahRingkas, tanggalPendek } from '../../lib/format';
+
+export const getStaticPaths = (() =>
+  semuaProduk.map((produk) => ({
+    params: { slug: produk.slug },
+    props: { produk },
+  }))) satisfies GetStaticPaths;
+
+interface Props {
+  produk: Produk;
+}
+
+const { produk } = Astro.props;
+const asal = Astro.site ?? new URL('http://localhost:8095');
+
+const terkait = cariProduk({ kategori: produk.kategori })
+  .filter((p) => p.slug !== produk.slug)
+  .slice(0, 4);
+
+const coret = hargaTercoret(produk);
+const diskon = persenDiskon(produk);
+const habis = produk.stok === 0;
+const menipis = !habis && produk.stok <= 10;
+
+const tautanPesan = linkWa(
+  `Halo ${SITE.namaLengkap}, saya mau pesan *${produk.nama}* (${rupiah(produk.harga)}). Mohon info stok dan ukuran yang tersedia ya.`,
+);
+
+const skema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: produk.nama,
+    description: produk.deskripsi,
+    sku: produk.slug,
+    image: [
+      new URL(produk.gambar.src, asal).href,
+      ...produk.gambarVarian.map((v) => new URL(v.gambar.src, asal).href),
+    ],
+    brand: { '@type': 'Brand', name: SITE.namaLengkap },
+    material: produk.bahan,
+    color: produk.warna.join(', '),
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: produk.rating,
+      reviewCount: produk.terjual,
+      bestRating: 5,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: produk.harga,
+      priceCurrency: 'IDR',
+      availability: habis ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+      url: new URL(`/produk/${produk.slug}`, asal).href,
+      seller: { '@type': 'Organization', name: SITE.namaLengkap },
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Beranda', item: new URL('/', asal).href },
+      { '@type': 'ListItem', position: 2, name: 'Katalog', item: new URL('/katalog', asal).href },
+      { '@type': 'ListItem', position: 3, name: produk.nama, item: new URL(`/produk/${produk.slug}`, asal).href },
+    ],
+  },
+];
+
+const galeri = [{ nama: produk.nama, gambar: produk.gambar }, ...produk.gambarVarian];
+---
+
+<BaseLayout
+  judul={`${produk.nama} — ${rupiahRingkas(produk.harga)} | ${SITE.namaLengkap}`}
+  deskripsi={`Beli ${produk.nama} berbahan ${produk.bahan}. ${produk.ringkas} Harga ${rupiah(produk.harga)}, gratis ongkir di atas Rp300.000, tukar ukuran 7 hari.`}
+  path={`/produk/${produk.slug}`}
+  gambar={produk.gambar.src}
+  tipe="product"
+  kelasBody="pb-20 lg:pb-0"
+  skema={skema}
+>
+  <div class="wadah pt-6">
+    <Breadcrumb
+      items={[
+        { label: 'Beranda', href: '/' },
+        { label: 'Katalog', href: '/katalog' },
+        { label: produk.nama },
+      ]}
+    />
+  </div>
+
+  <article
+    class="wadah grid gap-10 py-10 lg:grid-cols-2 lg:gap-16 lg:py-14"
+    data-wa-nomor={SITE.whatsapp}
+    data-wa-brand={SITE.namaLengkap}
+    data-wa-produk={produk.nama}
+    data-wa-harga={rupiah(produk.harga)}
+  >
+    <div class="lg:sticky lg:top-28 lg:self-start">
+      <div
+        id="galeri-produk"
+        class="relative aspect-4/5 overflow-hidden rounded-besar bg-sand-100"
+        aria-live="polite"
+      >
+        {
+          galeri.map((v, i) => (
+            <Image
+              src={v.gambar}
+              alt={`${produk.nama}${galeri.length > 1 ? ` — foto ${i + 1}` : ''}`}
+              widths={[720, 1000]}
+              sizes="(min-width: 1024px) 36rem, 92vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              class:list={[
+                'absolute inset-0 size-full object-cover transition-opacity duration-300',
+                i === 0 ? '' : 'opacity-0',
+              ]}
+              data-varian-gambar={i}
+            />
+          ))
+        }
+      </div>
+
+      {
+        galeri.length > 1 && (
+          <ul class="mt-3 grid grid-cols-4 gap-3" data-varian-daftar>
+            {galeri.map((v, i) => (
+              <li>
+                <button
+                  type="button"
+                  aria-pressed={i === 0}
+                  aria-label={`Lihat foto ${i + 1}`}
+                  data-varian-tombol={i}
+                  data-varian-nama={v.nama}
+                  data-varian-label={`Foto ${i + 1}`}
+                  class:list={[
+                    'group w-full overflow-hidden rounded-xl border-2 bg-sand-100 text-left transition-colors',
+                    i === 0 ? 'border-rose-600' : 'border-transparent hover:border-rose-400',
+                  ]}
+                >
+                  <span class="block aspect-square overflow-hidden">
+                    <Image
+                      src={v.gambar}
+                      alt=""
+                      widths={[120, 220]}
+                      sizes="6rem"
+                      loading="lazy"
+                      class="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </span>
+                  <span class="block truncate px-1.5 py-1 text-center text-[0.6875rem] font-medium text-sand-700">
+                    Foto {i + 1}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <div>
+      <a
+        href={`/katalog/?kategori=${produk.kategori}`}
+        class="label bg-rose-50 text-rose-800 transition-colors hover:bg-rose-100"
+      >
+        {produk.kategori}
+      </a>
+
+      <h1 class="mt-4 text-[1.875rem] leading-tight text-balance sm:text-[2.25rem]">
+        {produk.nama}
+      </h1>
+
+      <div class="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Bintang nilai={produk.rating} ukuran="md" tampilAngka />
+        <span class="text-sm text-sand-600">{produk.terjual} terjual</span>
+        <span class="text-sm text-sand-600">Masuk katalog {tanggalPendek(produk.tanggalMasuk)}</span>
+      </div>
+
+      <div class="mt-6 flex flex-wrap items-end gap-3">
+        <p class="font-serif text-[2rem] leading-none font-semibold text-rose-800">
+          {rupiah(produk.harga)}
+        </p>
+        {
+          coret && (
+            <>
+              <p class="pb-1 text-base text-sand-600 line-through">{rupiah(coret)}</p>
+              <span class="label mb-1 bg-rose-600 text-white">Hemat {diskon}%</span>
+            </>
+          )
+        }
+      </div>
+      <p class="mt-2 text-xs leading-relaxed text-sand-600">
+        Harga sudah termasuk pajak. Gratis ongkir untuk pembelian di atas {rupiah(SITE.gratisOngkirMinimal)}.
+      </p>
+
+      <p class="mt-6 text-[0.9375rem] leading-relaxed text-sand-700">{produk.deskripsi}</p>
+
+      <ul class="mt-5 flex flex-wrap gap-2">
+        {
+          produk.catatan.map((c) => (
+            <li class="inline-flex items-center gap-1.5 rounded-full bg-sand-100 px-3 py-1.5 text-xs text-sand-600">
+              <Ikon nama="centang" kelas="size-3.5 text-rose-600" />
+              {c}
+            </li>
+          ))
+        }
+      </ul>
+
+      <dl class="mt-8 divide-y divide-sand-200 border-y border-sand-200 text-sm">
+        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
+          <dt class="text-sand-600">Bahan</dt>
+          <dd class="text-sand-800">{produk.bahan}</dd>
+        </div>
+        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
+          <dt class="text-sand-600">Warna</dt>
+          <dd class="flex flex-wrap gap-1.5">
+            {
+              produk.warna.map((w) => (
+                <span data-warna={w} class="rounded-md bg-sand-100 px-2 py-0.5 text-xs text-sand-700 transition-colors">
+                  {w}
+                </span>
+              ))
+            }
+          </dd>
+        </div>
+        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
+          <dt class="text-sand-600">Ukuran</dt>
+          <dd class="flex flex-wrap gap-1.5">
+            {
+              produk.ukuran.map((u) => (
+                <span class="rounded-md border border-sand-200 px-2.5 py-0.5 text-xs text-sand-700">{u}</span>
+              ))
+            }
+          </dd>
+        </div>
+        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
+          <dt class="text-sand-600">Stok</dt>
+          <dd
+            class:list={[
+              'font-medium',
+              habis ? 'text-rose-700' : menipis ? 'text-champagne-700' : 'text-emerald-700',
+            ]}
+          >
+            {habis ? 'Stok habis' : menipis ? `Tinggal ${produk.stok} pcs` : `Tersedia ${produk.stok} pcs`}
+          </dd>
+        </div>
+        <div class="grid grid-cols-[7rem_1fr] gap-4 py-3.5 sm:grid-cols-[9rem_1fr]">
+          <dt class="text-sand-600">Perawatan</dt>
+          <dd>
+            <ul class="space-y-1.5">
+              {
+                produk.perawatan.map((p) => (
+                  <li class="flex gap-2 text-sand-700">
+                    <Ikon nama="centang" kelas="mt-0.5 size-3.5 shrink-0 text-rose-600" />
+                    {p}
+                  </li>
+                ))
+              }
+            </ul>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        {
+          habis ? (
+            <span class="tombol tombol-utama flex-1 cursor-not-allowed opacity-50" aria-disabled="true">
+              <Ikon nama="whatsapp" kelas="size-4" />
+              Stok habis
+            </span>
+          ) : (
+            <a href={tautanPesan} target="_blank" rel="noopener" data-wa-pesan class="tombol tombol-utama flex-1">
+              <Ikon nama="whatsapp" kelas="size-4" />
+              Pesan via WhatsApp
+            </a>
+          )
+        }
+        <a href="/katalog" class="tombol tombol-sekunder">Lihat produk lain</a>
+      </div>
+
+      <ul class="mt-6 grid gap-2.5 text-xs text-sand-600 sm:grid-cols-3">
+        <li class="flex items-center gap-2"><Ikon nama="truck" kelas="size-4 text-rose-400" /> Gratis ongkir 300rb+</li>
+        <li class="flex items-center gap-2"><Ikon nama="swap" kelas="size-4 text-rose-400" /> Tukar ukuran 7 hari</li>
+        <li class="flex items-center gap-2"><Ikon nama="shield" kelas="size-4 text-rose-400" /> Garansi cacat produksi</li>
+      </ul>
+    </div>
+  </article>
+
+  {
+    terkait.length > 0 && (
+      <section class="wadah py-16 sm:py-20" aria-labelledby="jdl-terkait">
+        <h2 id="jdl-terkait" class="text-2xl text-sand-900 sm:text-[1.75rem]">
+          Mungkin kamu suka juga
+        </h2>
+        <ul class="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+          {terkait.map((p) => (
+            <li>
+              <ProdukCard produk={p} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- Bar pesan melekat (mobile) -->
+  <div
+    class="fixed inset-x-0 bottom-0 z-40 border-t border-sand-200 bg-kertas/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+  >
+    <div class="wadah flex items-center justify-between gap-3 py-3">
+      <div class="min-w-0">
+        <p class="font-serif text-lg leading-none font-semibold text-rose-800">{rupiah(produk.harga)}</p>
+        <p class="mt-1 truncate text-xs text-sand-600">{produk.nama}</p>
+      </div>
+      {
+        habis ? (
+          <span class="tombol tombol-utama shrink-0 cursor-not-allowed opacity-50" aria-disabled="true">
+            Stok habis
+          </span>
+        ) : (
+          <a href={tautanPesan} target="_blank" rel="noopener" data-wa-pesan class="tombol tombol-utama shrink-0">
+            <Ikon nama="whatsapp" kelas="size-4" />
+            Pesan
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <TombolWa sembunyiSeluler />
+</BaseLayout>
+
+<script>
+  const tombol = document.querySelectorAll<HTMLButtonElement>('[data-varian-tombol]');
+  const gambar = document.querySelectorAll<HTMLImageElement>('[data-varian-gambar]');
+  const badgeWarna = document.querySelectorAll<HTMLElement>('[data-warna]');
+  const tautanPesan = document.querySelectorAll<HTMLAnchorElement>('[data-wa-pesan]');
+  const infoWa = document.querySelector<HTMLElement>('[data-wa-nomor]');
+
+  const urlPesan = (varian?: string) => {
+    if (!infoWa) return null;
+    const { waNomor, waBrand, waProduk, waHarga } = infoWa.dataset;
+    let teks = `Halo ${waBrand}, saya mau pesan *${waProduk}* (${waHarga}).`;
+    if (varian) teks += ` Varian: ${varian}.`;
+    teks += ' Mohon info stok dan ukuran yang tersedia ya.';
+    return `https://wa.me/${waNomor}?text=${encodeURIComponent(teks)}`;
+  };
+
+  tombol.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const i = Number(btn.dataset.varianTombol);
+      if (Number.isNaN(i)) return;
+
+      tombol.forEach((b, k) => {
+        b.setAttribute('aria-pressed', String(k === i));
+        b.classList.toggle('border-rose-600', k === i);
+        b.classList.toggle('border-transparent', k !== i);
+      });
+      gambar.forEach((img, k) => {
+        img.classList.toggle('opacity-0', k !== i);
+      });
+
+      const nama = btn.dataset.varianNama ?? '';
+      badgeWarna.forEach((badge) => {
+        const aktif = badge.dataset.warna === nama;
+        badge.classList.toggle('bg-rose-100', aktif);
+        badge.classList.toggle('font-medium', aktif);
+        badge.classList.toggle('text-rose-800', aktif);
+        badge.classList.toggle('bg-sand-100', !aktif);
+        badge.classList.toggle('text-sand-700', !aktif);
+      });
+
+      const url = urlPesan(btn.dataset.varianLabel);
+      if (url) tautanPesan.forEach((a) => a.setAttribute('href', url));
+    }),
+  );
+</script>
