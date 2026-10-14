@@ -52,16 +52,33 @@
       "hargaCoret": 375000,
       "badge": "Terlaris",
       "bahan": "Sifon premium dengan lining satin",
-      "warna": ["Dusty Rose", "Ivory", "Sage"],
-      "ukuran": ["S", "M", "L", "XL"],
+      "warna": [
+        "Dusty Rose",
+        "Ivory",
+        "Sage"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 24,
       "terjual": 312,
       "rating": 4.9,
       "tanggalMasuk": "2026-08-14",
       "ringkas": "Midi dress sifon dengan aksen ruffle halus dan belt yang bisa dilepas.",
       "deskripsi": "Midi dress sifon dengan potongan A-line yang nyaman di semua bentuk badan. Bahannya jatuh dan tidak menerawang, sudah dil lining penuh. Dilengkapi belt tipis yang bisa dilepas supaya mudah ditata untuk kerja maupun acara santai.",
-      "perawatan": ["Cuci tangan atau delicate cycle", "Setrika suhu sedang", "Simpan dalam hanger"],
-      "catatan": ["Sudah termasuk lining penuh", "Belt dapat dilepas", "Kancing belakang tersembunyi"]
+      "perawatan": [
+        "Cuci tangan atau delicate cycle",
+        "Setrika suhu sedang",
+        "Simpan dalam hanger"
+      ],
+      "catatan": [
+        "Sudah termasuk lining penuh",
+        "Belt dapat dilepas",
+        "Kancing belakang tersembunyi"
+      ]
     },
     {
       "slug": "kemeja-linen-sage",
@@ -71,16 +88,34 @@
       "hargaCoret": null,
       "badge": "Baru",
       "bahan": "Linen premium 100 persen",
-      "warna": ["Sage", "Putih", "Navy"],
-      "ukuran": ["S", "M", "L", "XL", "XXL"],
+      "warna": [
+        "Sage",
+        "Putih",
+        "Navy"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "stok": 40,
       "terjual": 87,
       "rating": 4.8,
       "tanggalMasuk": "2026-09-02",
       "ringkas": "Kemeja linen loose fit dengan kancing penuh dan dua saku tempel.",
       "deskripsi": "Kemeja linen dengan potongan longgar dan kancing penuh. Bahannya adem dan menyerap keringat, cocok untuk dipakai seharian maupun ke kantor. Dua saku tempel yang tidak membuat tampilan terasa berat.",
-      "perawatan": ["Mesin cuci cold gentle", "Setrika dengan presser cloth", "Hindari pemutih"],
-      "catatan": ["Bahan linen adem", "Kancing penuh dari atas sampai bawah", "Mudah dilapis"]
+      "perawatan": [
+        "Mesin cuci cold gentle",
+        "Setrika dengan presser cloth",
+        "Hindari pemutih"
+      ],
+      "catatan": [
+        "Bahan linen adem",
+        "Kancing penuh dari atas sampai bawah",
+        "Mudah dilapis"
+      ]
     },
     {
       "slug": "gamis-krepe-mawar",
@@ -90,16 +125,33 @@
       "hargaCoret": 520000,
       "badge": "Promo",
       "bahan": "Crepe premium jenis woollis",
-      "warna": ["Dusty Pink", "Mocca", "Abu-abu"],
-      "ukuran": ["M", "L", "XL", "XXL"],
+      "warna": [
+        "Dusty Pink",
+        "Mocca",
+        "Abu-abu"
+      ],
+      "ukuran": [
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "stok": 12,
       "terjual": 156,
       "rating": 4.7,
       "tanggalMasuk": "2026-07-21",
       "ringkas": "Gamis krepe loose yang jatuh, dengan manset dan kerah modest.",
       "deskripsi": "Gamis krepe dengan potongan loose yang jatuh lurus dan tidak menempel di badan. Kerah dan manset dipasang rapi, lengan panjang dengan resleting yang tersembunyi. Pilihan tepat untuk acara keluarga dan pemakaian harian.",
-      "perawatan": ["Mesin cuci cold", "Setrika suhu sedang", "Lipat dalam kondisi kering"],
-      "catatan": ["Manset dan kerah modest", "Resleting lengan tersembunyi", "Jahitan rangkap"]
+      "perawatan": [
+        "Mesin cuci cold",
+        "Setrika suhu sedang",
+        "Lipat dalam kondisi kering"
+      ],
+      "catatan": [
+        "Manset dan kerah modest",
+        "Resleting lengan tersembunyi",
+        "Jahitan rangkap"
+      ]
     },
     {
       "slug": "blouse-satin-dusk",
@@ -109,16 +161,33 @@
       "hargaCoret": null,
       "badge": null,
       "bahan": "Satin silk touch",
-      "warna": ["Dusk Purple", "Champagne", "Hitam"],
-      "ukuran": ["S", "M", "L", "XL"],
+      "warna": [
+        "Dusk Purple",
+        "Champagne",
+        "Hitam"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 55,
       "terjual": 203,
       "rating": 4.6,
       "tanggalMasuk": "2026-06-30",
       "ringkas": "Blouse satin dengan lengan puff ringan dan tali pinggang yang adjustable.",
       "deskripsi": "Blouse satin dengan lengan puff ringan dan bagian pinggang yang bisa diseratkan. Permukaan halus dengan kilau lembut, cocok dipadukan dengan rok midi atau kulot polos.",
-      "perawatan": ["Cuci tangan", "Setrika suhu rendah dari sisi dalam", "Hindari gantung terlalu lama"],
-      "catatan": ["Lengan puff ringan", "Tali pinggang adjustable", "Bahan tidak menerawang"]
+      "perawatan": [
+        "Cuci tangan",
+        "Setrika suhu rendah dari sisi dalam",
+        "Hindari gantung terlalu lama"
+      ],
+      "catatan": [
+        "Lengan puff ringan",
+        "Tali pinggang adjustable",
+        "Bahan tidak menerawang"
+      ]
     },
     {
       "slug": "outer-long-trikot-oat",
@@ -128,16 +197,32 @@
       "hargaCoret": null,
       "badge": null,
       "bahan": "Trikot rajut medium weight",
-      "warna": ["Oat", "Charcoal", "Camel"],
-      "ukuran": ["M", "L", "XL"],
+      "warna": [
+        "Oat",
+        "Charcoal",
+        "Camel"
+      ],
+      "ukuran": [
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 18,
       "terjual": 74,
       "rating": 4.8,
       "tanggalMasuk": "2026-08-05",
       "ringkas": "Cardigan panjang rajut dengan potongan A-line dan kancing berangkur.",
       "deskripsi": "Outerwear rajut dengan panjang di bawah lutut yang hangat tanpa terasa berat. Kancing depan berangkur membuat gampang dipakai terbuka, dan ada dua saku sisi di bagian dalam.",
-      "perawatan": ["Cuci tangan atau wool cycle", "Kering mendatar", "Simpan terlipat"],
-      "catatan": ["Rajut medium weight", "Kancing berangkur", "Saku sisi dalam"]
+      "perawatan": [
+        "Cuci tangan atau wool cycle",
+        "Kering mendatar",
+        "Simpan terlipat"
+      ],
+      "catatan": [
+        "Rajut medium weight",
+        "Kancing berangkur",
+        "Saku sisi dalam"
+      ]
     },
     {
       "slug": "kulot-pleats-sand",
@@ -147,16 +232,34 @@
       "hargaCoret": 299000,
       "badge": "Promo",
       "bahan": "Poly viscose anti kusut",
-      "warna": ["Sand", "Black", "Dusty Blue"],
-      "ukuran": ["S", "M", "L", "XL", "XXL"],
+      "warna": [
+        "Sand",
+        "Black",
+        "Dusty Blue"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "stok": 33,
       "terjual": 189,
       "rating": 4.7,
       "tanggalMasuk": "2026-07-08",
       "ringkas": "Kulot pleats tinggi dengan resleting samping dan bahan yang tidak mudah kusut.",
       "deskripsi": "Kulot dengan pinggang tinggi dan pleats yang tetap rapi sepanjang hari. Resleting samping bikin gampang disesuaikan, dan bahannya tidak mudah kusut sehingga aman dipakai seharian.",
-      "perawatan": ["Mesin cuci cold", "Setrika suhu sedang", "Bahan anti kusut"],
-      "catatan": ["Pingtang tinggi dengan resleting samping", "Bahan anti kusut", "Saku kanan dan kiri"]
+      "perawatan": [
+        "Mesin cuci cold",
+        "Setrika suhu sedang",
+        "Bahan anti kusut"
+      ],
+      "catatan": [
+        "Pingtang tinggi dengan resleting samping",
+        "Bahan anti kusut",
+        "Saku kanan dan kiri"
+      ]
     },
     {
       "slug": "set-linen-matcha",
@@ -166,16 +269,33 @@
       "hargaCoret": null,
       "badge": "Baru",
       "bahan": "Linen viscose blend",
-      "warna": ["Matcha", "Ecru", "Terracotta"],
-      "ukuran": ["S", "M", "L", "XL"],
+      "warna": [
+        "Matcha",
+        "Ecru",
+        "Terracotta"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 20,
       "terjual": 61,
       "rating": 4.9,
       "tanggalMasuk": "2026-09-10",
       "ringkas": "Set atasan dan celana linen dalam satu paket, tinggal pakai.",
       "deskripsi": "Set dua pcs dengan atasan sleeveless dan celana kulot straight. Warnanya senada dan bahannya adem, jadi gampang dipadukan untuk outfit kantor maupun hangout.",
-      "perawatan": ["Mesin cuci cold gentle", "Setrika suhu sedang", "Jaga warna tetap cerah"],
-      "catatan": ["Dua pcs: atasan dan celana", "Warna senada antara atasan dan celana", "Bahan adem untuk cuaca panas"]
+      "perawatan": [
+        "Mesin cuci cold gentle",
+        "Setrika suhu sedang",
+        "Jaga warna tetap cerah"
+      ],
+      "catatan": [
+        "Dua pcs: atasan dan celana",
+        "Warna senada antara atasan dan celana",
+        "Bahan adem untuk cuaca panas"
+      ]
     },
     {
       "slug": "midi-dress-velvet-berry",
@@ -185,16 +305,32 @@
       "hargaCoret": null,
       "badge": null,
       "bahan": "Velvet premium",
-      "warna": ["Berry", "Emerald", "Midnight"],
-      "ukuran": ["S", "M", "L"],
+      "warna": [
+        "Berry",
+        "Emerald",
+        "Midnight"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L"
+      ],
       "stok": 9,
       "terjual": 48,
       "rating": 4.8,
       "tanggalMasuk": "2026-08-28",
       "ringkas": "Midi dress velvet dengan potongan body fit dan aksen lipatan di bahu.",
       "deskripsi": "Dress velvet dengan aksen lipatan di bahu dan potongan yang memeluk tubuh. Bahannya tebal dan tidak menerawang, cocok untuk acara malam atau jamuan formal.",
-      "perawatan": ["Gantung dengan hanger", "Cuci dry cleaner", "Sikat lembut bila perlu"],
-      "catatan": ["Velvet tebal dan tidak menerawang", "Lipatan detail di bahu", "Perawatan dry clean"]
+      "perawatan": [
+        "Gantung dengan hanger",
+        "Cuci dry cleaner",
+        "Sikat lembut bila perlu"
+      ],
+      "catatan": [
+        "Velvet tebal dan tidak menerawang",
+        "Lipatan detail di bahu",
+        "Perawatan dry clean"
+      ]
     },
     {
       "slug": "rok-lipstik-slate",
@@ -204,16 +340,33 @@
       "hargaCoret": null,
       "badge": null,
       "bahan": "Wool blend",
-      "warna": ["Slate", "Black", "Camel"],
-      "ukuran": ["S", "M", "L", "XL"],
+      "warna": [
+        "Slate",
+        "Black",
+        "Camel"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 27,
       "terjual": 112,
       "rating": 4.5,
       "tanggalMasuk": "2026-05-19",
       "ringkas": "Rok midi A-line dengan lipatan depan yang tegas.",
       "deskripsi": "Rok midi A-line dengan lipatan depan yang tegas dan bahan wool blend yang jatuh. Panjang di bawah lutut, cocok dipadukan dengan atasan basic untuk tampilan yang clean.",
-      "perawatan": ["Mesin cuci cold", "Setrika lipatan dengan api", "Gantung setelah kering"],
-      "catatan": ["Lipatan depan presisi", "Bahan wool blend", "Resleting belakang dan kait"]
+      "perawatan": [
+        "Mesin cuci cold",
+        "Setrika lipatan dengan api",
+        "Gantung setelah kering"
+      ],
+      "catatan": [
+        "Lipatan depan presisi",
+        "Bahan wool blend",
+        "Resleting belakang dan kait"
+      ]
     },
     {
       "slug": "gamis-abaya-dusty",
@@ -223,16 +376,33 @@
       "hargaCoret": 600000,
       "badge": "Promo",
       "bahan": "Jersey premium double knit",
-      "warna": ["Dusty Mauve", "Charcoal", "Sand"],
-      "ukuran": ["M", "L", "XL", "XXL"],
+      "warna": [
+        "Dusty Mauve",
+        "Charcoal",
+        "Sand"
+      ],
+      "ukuran": [
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "stok": 15,
       "terjual": 98,
       "rating": 4.7,
       "tanggalMasuk": "2026-07-30",
       "ringkas": "Gamis abaya full sleeves dengan bordir halus di kerah dan hem.",
       "deskripsi": "Gamis dengan potongan loose dan lengan panjang. Ada aksen bordir halus di bagian kerah dan hem yang membuat tampilan terasa lebih rapi. Bahannya double knit sehingga nyaman dan tidak menerawang.",
-      "perawatan": ["Mesin cuci cold gentle", "Setrika suhu sedang", "Simpan bergantung bahu"],
-      "catatan": ["Lengan panjang dengan manset", "Bordir halus di kerah dan hem", "Bahan double knit"]
+      "perawatan": [
+        "Mesin cuci cold gentle",
+        "Setrika suhu sedang",
+        "Simpan bergantung bahu"
+      ],
+      "catatan": [
+        "Lengan panjang dengan manset",
+        "Bordir halus di kerah dan hem",
+        "Bahan double knit"
+      ]
     },
     {
       "slug": "blouse-katun-seafoam",
@@ -242,16 +412,33 @@
       "hargaCoret": null,
       "badge": null,
       "bahan": "Katun combed 30s",
-      "warna": ["Seafoam", "White", "Lilac"],
-      "ukuran": ["S", "M", "L", "XL"],
+      "warna": [
+        "Seafoam",
+        "White",
+        "Lilac"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 61,
       "terjual": 245,
       "rating": 4.6,
       "tanggalMasuk": "2026-06-12",
       "ringkas": "Blouse katun dasar dengan potongan regular dan bahan adem.",
       "deskripsi": "Blouse katun dasar dengan potongan regular fit. Bahannya adem dan tidak mudah kusut, aman dipakai untuk kebutuhan harian maupun seragam kantor.",
-      "perawatan": ["Mesin cuci cold", "Setrika suhu sedang", "Bahan tidak mudah kusut"],
-      "catatan": ["Katun combed adem", "Kancing depan penuh", "Anti kusut"]
+      "perawatan": [
+        "Mesin cuci cold",
+        "Setrika suhu sedang",
+        "Bahan tidak mudah kusut"
+      ],
+      "catatan": [
+        "Katun combed adem",
+        "Kancing depan penuh",
+        "Anti kusut"
+      ]
     },
     {
       "slug": "outer-jacket-sand",
@@ -261,16 +448,33 @@
       "hargaCoret": null,
       "badge": "Baru",
       "bahan": "Twill dengan lining",
-      "warna": ["Sand", "Navy", "Black"],
-      "ukuran": ["S", "M", "L", "XL"],
+      "warna": [
+        "Sand",
+        "Navy",
+        "Black"
+      ],
+      "ukuran": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
       "stok": 14,
       "terjual": 36,
       "rating": 4.8,
       "tanggalMasuk": "2026-09-15",
       "ringkas": "Jaket twill dengan garis bahu tegas dan lining ringan.",
       "deskripsi": "Jaket dengan potongan regular dan garis bahu yang tegas memberi tampilan yang tegas. Ada lining tipis supaya tetap nyaman, dan dua saku sisi dengan bukaan diagonal.",
-      "perawatan": ["Mesin cuci cold", "Setrika suhu sedang", "Gantung dengan hanger"],
-      "catatan": ["Lining ringan", "Saku diagonal", "Kancing metal"]
+      "perawatan": [
+        "Mesin cuci cold",
+        "Setrika suhu sedang",
+        "Gantung dengan hanger"
+      ],
+      "catatan": [
+        "Lining ringan",
+        "Saku diagonal",
+        "Kancing metal"
+      ]
     }
   ]
 }

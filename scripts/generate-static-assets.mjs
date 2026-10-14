@@ -1,8 +1,11 @@
 /**
  * Membuat aset statis verktor/raster sekali pakai:
- *  - public/img/og-default.png  (1200x630) — gambar default untuk Open Graph
- *  - public/logo.png            (512x512)  — dipakai schema.org /logo
- *  - public/apple-touch-icon.png(180x180)
+ *  - public/img/og-default.png       (1200x630) — gambar default untuk Open Graph
+ *  - public/logo.png                 (512x512)  — dipakai schema.org /logo
+ *  - public/apple-touch-icon.png     (180x180)
+ *  - public/icon-192.png             (192x192)  — ikon PWA
+ *  - public/icon-512.png             (512x512)  — ikon PWA
+ *  - public/icon-maskable-512.png    (512x512)  — ikon PWA maskable (zona aman)
  * Semua dari satu SVG yang sama supaya identitas merek konsisten.
  */
 import { mkdir } from 'node:fs/promises';
@@ -30,6 +33,26 @@ const base = (w, h, extra='') => `<svg xmlns="http://www.w3.org/2000/svg" width=
     <circle cx="32" cy="30" r="4.5" fill="#e9cba7"/>
   </g>
   ${extra}
+</svg>`;
+
+/**
+ * Ikon PWA berbasis viewBox persegi (mudah diskalakan ke ukuran apa pun).
+ * `k` mengatur besar mark terhadap kanvas; untuk maskable dipakai lebih kecil
+ * supaya seluruh mark masuk zona aman (80% tengah).
+ */
+const icon = (size, k) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9f3756"/>
+      <stop offset="1" stop-color="#5d2233"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" fill="url(#g)"/>
+  <g transform="translate(50 50) scale(${k}) translate(-32 -36)">
+    <path d="${G}" fill="#fdf2f4" opacity="0.95"/>
+    <path d="${E}" fill="#e9cba7" opacity="0.95"/>
+    <circle cx="32" cy="30" r="4.5" fill="#e9cba7"/>
+  </g>
 </svg>`;
 
 // OG image bernuansa editorial
@@ -67,6 +90,9 @@ const jobs = [
   ['img/og-default.png', og, 1200, 630],
   ['logo.png', base(512, 512), 512, 512],
   ['apple-touch-icon.png', base(180, 180), 180, 180],
+  ['icon-192.png', icon(192, 1.15), 192, 192],
+  ['icon-512.png', icon(512, 1.15), 512, 512],
+  ['icon-maskable-512.png', icon(512, 0.78), 512, 512],
 ];
 
 for (const [rel, svg, w, h] of jobs) {

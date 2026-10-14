@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — Mekar Boutique</title>
+    <style>
+      :root {
+        --bg: #f6f4f2;
+        --panel: #ffffff;
+        --garis: #e6e1dc;
+        --teks: #2b2523;
+        --redup: #7a706b;
+        --merek: #9f3756;
+        --merek2: #7a2436;
+        --ok: #1c7c54;
+        --galat: #b3261e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--teks);
+        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      header.bar {
+        position: sticky; top: 0; z-index: 10;
+        display: flex; align-items: center; gap: 16px;
+        padding: 14px 22px;
+        background: var(--merek2); color: #fff;
+      }
+      header.bar h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: .2px; }
+      header.bar .tabs { display: flex; gap: 6px; margin-left: auto; }
+      header.bar .tabs button {
+        background: rgba(255,255,255,.12); color: #fff; border: 0;
+        padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 14px;
+      }
+      header.bar .tabs button.aktif { background: #fff; color: var(--merek2); font-weight: 600; }
+      main { max-width: 1080px; margin: 0 auto; padding: 22px; }
+      .panel { background: var(--panel); border: 1px solid var(--garis); border-radius: 14px; padding: 22px; }
+      .panel + .panel { margin-top: 18px; }
+      h2 { font-size: 15px; margin: 0 0 16px; }
+      h2 span { color: var(--redup); font-weight: 400; }
+      label { display: block; font-size: 12.5px; color: var(--redup); margin: 0 0 5px; }
+      input, select, textarea {
+        width: 100%; padding: 9px 11px; font: inherit; color: var(--teks);
+        background: #fff; border: 1px solid var(--garis); border-radius: 9px;
+      }
+      input:focus, select:focus, textarea:focus { outline: 2px solid var(--merek); outline-offset: -1px; border-color: var(--merek); }
+      textarea { resize: vertical; min-height: 74px; }
+      .grid { display: grid; gap: 14px 16px; }
+      .c2 { grid-template-columns: 1fr 1fr; }
+      .c3 { grid-template-columns: 1fr 1fr 1fr; }
+      .full { grid-column: 1 / -1; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 9px 16px; border-radius: 9px; border: 1px solid var(--garis);
+        background: #fff; color: var(--teks); cursor: pointer; font: inherit;
+      }
+      .btn:hover { border-color: var(--redup); }
+      .btn.utama { background: var(--merek); border-color: var(--merek); color: #fff; }
+      .btn.utama:hover { background: var(--merek2); }
+      .btn.bahaya { color: var(--galat); border-color: #e7c9c6; }
+      .btn.bahaya:hover { background: #fdf1f0; }
+      .aksi { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+      .aksi .spacer { margin-left: auto; }
+      .produk-layout { display: grid; grid-template-columns: 260px 1fr; gap: 22px; align-items: start; }
+      .daftar { display: flex; flex-direction: column; gap: 6px; max-height: 65vh; overflow: auto; }
+      .daftar button {
+        text-align: left; padding: 9px 12px; border-radius: 9px; cursor: pointer;
+        background: #fff; border: 1px solid var(--garis); font: inherit; line-height: 1.3;
+      }
+      .daftar button small { display: block; color: var(--redup); font-size: 11.5px; }
+      .daftar button.aktif { border-color: var(--merek); background: #fdf3f5; box-shadow: inset 3px 0 0 var(--merek); }
+      .gambar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 8px; }
+      .kartu-gambar { position: relative; border: 1px solid var(--garis); border-radius: 10px; overflow: hidden; background: #faf8f6; }
+      .kartu-gambar img { display: block; width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+      .kartu-gambar .cap { font-size: 11px; padding: 5px 7px; color: var(--redup); }
+      .kartu-gambar .hapus {
+        position: absolute; top: 6px; right: 6px; width: 26px; height: 26px;
+        border-radius: 999px; border: 0; cursor: pointer; background: rgba(0,0,0,.55); color: #fff; line-height: 1;
+      }
+      .kartu-gambar .hapus:hover { background: var(--galat); }
+      .kosong { color: var(--redup); font-size: 13px; padding: 10px 0; }
+      .drop {
+        border: 1.5px dashed var(--garis); border-radius: 12px; padding: 18px;
+        text-align: center; color: var(--redup); cursor: pointer; background: #faf8f6;
+      }
+      .drop:hover, .drop.hover { border-color: var(--merek); color: var(--merek); }
+      .kategori-edit { display: flex; flex-direction: column; gap: 8px; }
+      .kategori-baris { display: grid; grid-template-columns: 100px 1fr 2fr 34px; gap: 8px; align-items: center; }
+      .kategori-baris input, .kategori-baris textarea { min-height: 0; padding: 7px 9px; }
+      .x {
+        border: 1px solid var(--garis); background: #fff; border-radius: 8px;
+        width: 34px; height: 34px; cursor: pointer; color: var(--galat); font-size: 16px;
+      }
+      .x:hover { background: #fdf1f0; }
+      #toast {
+        position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+        background: #2b2523; color: #fff; padding: 11px 18px; border-radius: 10px;
+        opacity: 0; pointer-events: none; transition: .22s; max-width: 90vw; font-size: 14px;
+      }
+      #toast.tampil { opacity: 1; transform: translateX(-50%) translateY(0); }
+      #toast.galat { background: var(--galat); }
+      #toast > div { white-space: pre-wrap; max-height: 40vh; overflow: auto; }
+      .sembunyi { display: none !important; }
+      .petunjuk { font-size: 12.5px; color: var(--redup); margin: 6px 0 0; }
+      @media (max-width: 720px) {
+        .produk-layout { grid-template-columns: 1fr; }
+        .c2, .c3 { grid-template-columns: 1fr; }
+        .kategori-baris { grid-template-columns: 1fr 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <h1>Admin Mekar Boutique</h1>
+      <nav class="tabs">
+        <button data-tab="kontak" class="aktif">Kontak &amp; Brand</button>
+        <button data-tab="produk">Produk &amp; Foto</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============ PANEL KONTAK ============ -->
+      <section id="panel-kontak" class="panel">
+        <h2>Identitas &amp; Kontak <span>— tampil di seluruh situs</span></h2>
+        <div class="grid c2">
+          <div>
+            <label>Nama singkat (logo)</label>
+            <input data-s="nama" />
+          </div>
+          <div>
+            <label>Nama lengkap</label>
+            <input data-s="namaLengkap" />
+          </div>
+          <div class="full">
+            <label>Tagline</label>
+            <input data-s="tagline" />
+          </div>
+          <div class="full">
+            <label>Deskripsi singkat (SEO)</label>
+            <textarea data-s="deskripsi"></textarea>
+          </div>
+          <div>
+            <label>Bahasa</label>
+            <input data-s="bahasa" />
+          </div>
+          <div>
+            <label>Lokasi (teks)</label>
+            <input data-s="lokasi" />
+          </div>
+          <div class="full">
+            <label>Alamat</label>
+            <textarea data-s="alamat"></textarea>
+          </div>
+          <div>
+            <label>Telepon / WhatsApp (tampilan)</label>
+            <input data-s="telepon" />
+          </div>
+          <div>
+            <label>Nomor WhatsApp (angka, format 628…)</label>
+            <input data-s="whatsapp" placeholder="6281120001234" />
+          </div>
+          <div class="full">
+            <label>Email</label>
+            <input data-s="email" />
+          </div>
+          <div class="full">
+            <label>Minimal gratis ongkir (Rp)</label>
+            <input type="number" data-s="gratisOngkirMinimal" />
+          </div>
+        </div>
+
+        <h2 style="margin-top:26px">Media Sosial <span>— tautan lengkap</span></h2>
+        <div class="grid c3">
+          <div>
+            <label>Instagram</label>
+            <input data-s="mediaSosial.instagram" />
+          </div>
+          <div>
+            <label>TikTok</label>
+            <input data-s="mediaSosial.tiktok" />
+          </div>
+          <div>
+            <label>WhatsApp</label>
+            <input data-s="mediaSosial.whatsapp" />
+          </div>
+        </div>
+
+        <h2 style="margin-top:26px">Jam Buka</h2>
+        <div id="jam-list" class="kategori-edit"></div>
+        <div class="aksi">
+          <button class="btn" id="jam-tambah">+ Tambah baris jam</button>
+          <button class="btn utama" id="simpan-site">Simpan kontak &amp; brand</button>
+        </div>
+      </section>
+
+      <!-- ============ PANEL PRODUK ============ -->
+      <section id="panel-produk" class="panel sembunyi">
+        <div class="produk-layout">
+          <div>
+            <h2>Produk <span id="jumlah-produk"></span></h2>
+            <div class="daftar" id="daftar-produk"></div>
+            <div class="aksi">
+              <button class="btn" id="produk-tambah">+ Tambah produk</button>
+            </div>
+          </div>
+
+          <div>
+            <h2>Detail Produk</h2>
+            <div class="grid c2">
+              <div>
+                <label>Nama produk</label>
+                <input id="p-nama" />
+              </div>
+              <div>
+                <label>Slug (URL)</label>
+                <input id="p-slug" />
+              </div>
+              <div>
+                <label>Kategori</label>
+                <select id="p-kategori"></select>
+              </div>
+              <div>
+                <label>Badge</label>
+                <select id="p-badge">
+                  <option value="">— tanpa badge —</option>
+                  <option value="Baru">Baru</option>
+                  <option value="Terlaris">Terlaris</option>
+                  <option value="Promo">Promo</option>
+                </select>
+              </div>
+              <div>
+                <label>Harga (Rp)</label>
+                <input type="number" id="p-harga" />
+              </div>
+              <div>
+                <label>Harga coret (Rp, kosongkan bila tidak ada)</label>
+                <input type="number" id="p-hargaCoret" />
+              </div>
+              <div>
+                <label>Stok</label>
+                <input type="number" id="p-stok" />
+              </div>
+              <div>
+                <label>Terjual</label>
+                <input type="number" id="p-terjual" />
+              </div>
+              <div>
+                <label>Rating (0–5)</label>
+                <input type="number" step="0.1" min="0" max="5" id="p-rating" />
+              </div>
+              <div>
+                <label>Tanggal masuk</label>
+                <input type="date" id="p-tanggalMasuk" />
+              </div>
+              <div class="full">
+                <label>Bahan</label>
+                <input id="p-bahan" />
+              </div>
+              <div>
+                <label>Warna (pisahkan dengan koma)</label>
+                <input id="p-warna" placeholder="Dusty Rose, Ivory, Sage" />
+              </div>
+              <div>
+                <label>Ukuran (pisahkan dengan koma)</label>
+                <input id="p-ukuran" placeholder="S, M, L, XL" />
+              </div>
+              <div class="full">
+                <label>Ringkasan (1 kalimat)</label>
+                <input id="p-ringkas" />
+              </div>
+              <div class="full">
+                <label>Deskripsi lengkap</label>
+                <textarea id="p-deskripsi"></textarea>
+              </div>
+              <div class="full">
+                <label>Perawatan (satu per baris)</label>
+                <textarea id="p-perawatan"></textarea>
+              </div>
+              <div class="full">
+                <label>Catatan (satu per baris)</label>
+                <textarea id="p-catatan"></textarea>
+              </div>
+            </div>
+
+            <h2 style="margin-top:26px">Foto Produk</h2>
+            <p class="petunjuk">
+              Foto utama dipakai di kartu &amp; halaman detail. Foto galeri jadi gambar tambahan.
+              Semua foto otomatis dipotong 4:5 dan dikonversi ke WebP.
+            </p>
+            <div id="gambar-area"></div>
+
+            <div class="aksi">
+              <button class="btn utama" id="simpan-produk">Simpan produk</button>
+              <button class="btn bahaya spacer" id="hapus-produk">Hapus produk</button>
+            </div>
+          </div>
+        </div>
+
+        <hr style="border:0;border-top:1px solid var(--garis);margin:26px 0" />
+        <details>
+          <summary style="cursor:pointer;font-weight:600">Ubah kategori <span style="color:var(--redup);font-weight:400">(lanjutan)</span></summary>
+          <p class="petunjuk">Slug kategori dipakai di produk. Ubah hanya bila perlu.</p>
+          <div id="kategori-list" class="kategori-edit" style="margin-top:10px"></div>
+          <div class="aksi">
+            <button class="btn" id="kategori-tambah">+ Tambah kategori</button>
+            <button class="btn utama" id="simpan-kategori">Simpan kategori</button>
+          </div>
+        </details>
+      </section>
+
+      <div class="panel">
+        <h2>Bangun ulang situs</h2>
+        <p class="petunjuk">
+          Perubahan tersimpan di berkas. Klik tombol ini untuk membangun ulang situs produksi
+          (docker). Bila sedang menjalankan <code>npm run dev</code>, cukup muat ulang halaman.
+        </p>
+        <div class="aksi">
+          <button class="btn utama" id="rebuild">Bangun ulang situs</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="toast"><div></div></div>
+
+    <script>
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+      let state = null;
+      let idx = 0;
+
+      async function api(path, opts) {
+        const res = await fetch(path, opts);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+        return data;
+      }
+
+      let toastTimer;
+      function toast(msg, galat = false) {
+        const t = $("#toast");
+        t.querySelector("div").textContent = msg;
+        t.classList.toggle("galat", galat);
+        t.classList.add("tampil");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove("tampil"), galat ? 6000 : 2600);
+      }
+
+      // ---------- Tabs ----------
+      $$("header .tabs button").forEach((b) =>
+        b.addEventListener("click", () => {
+          $$("header .tabs button").forEach((x) => x.classList.toggle("aktif", x === b));
+          $("#panel-kontak").classList.toggle("sembunyi", b.dataset.tab !== "kontak");
+          $("#panel-produk").classList.toggle("sembunyi", b.dataset.tab !== "produk");
+        }),
+      );
+
+      // ---------- Muat data ----------
+      async function muat() {
+        state = await api("/api/data");
+        renderSite();
+        renderKategoriList();
+        renderDaftarProduk();
+        pilihProduk(0);
+      }
+
+      // ---------- Panel Kontak ----------
+      function renderSite() {
+        $$("[data-s]").forEach((inp) => {
+          const p = inp.dataset.s.split(".");
+          let v = state.site;
+          for (const k of p) v = v?.[k];
+          inp.value = v ?? "";
+        });
+        renderJam(state.site.jamBuka ?? []);
+      }
+
+      function renderJam(list) {
+        const box = $("#jam-list");
+        box.innerHTML = "";
+        list.forEach((j) => box.appendChild(barisJam(j.hari, j.jam)));
+      }
+      function barisJam(hari = "", jam = "") {
+        const d = document.createElement("div");
+        d.className = "kategori-baris";
+        d.style.gridTemplateColumns = "1fr 1fr 34px";
+        d.innerHTML =
+          '<input class="j-hari" placeholder="Hari" /><input class="j-jam" placeholder="Jam" />' +
+          '<button class="x" title="Hapus">×</button>';
+        d.querySelector(".j-hari").value = hari;
+        d.querySelector(".j-jam").value = jam;
+        d.querySelector(".x").addEventListener("click", () => d.remove());
+        return d;
+      }
+      $("#jam-tambah").addEventListener("click", () => $("#jam-list").appendChild(barisJam()));
+      document.addEventListener("click", (e) => {
+        const x = e.target.closest(".x");
+        if (x && x.dataset.k) x.closest(".kategori-baris").remove();
+      });
+
+      $("#simpan-site").addEventListener("click", async () => {
+        const site = JSON.parse(JSON.stringify(state.site));
+        $$("[data-s]").forEach((inp) => {
+          const p = inp.dataset.s.split(".");
+          let obj = site;
+          for (let i = 0; i < p.length - 1; i++) obj = obj[p[i]];
+          const key = p[p.length - 1];
+          obj[key] = inp.type === "number" ? Number(inp.value || 0) : inp.value;
+        });
+        site.jamBuka = $$("#jam-list .kategori-baris")
+          .map((r) => ({ hari: r.querySelector(".j-hari").value.trim(), jam: r.querySelector(".j-jam").value.trim() }))
+          .filter((j) => j.hari || j.jam);
+        try {
+          await api("/api/site", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(site),
+          });
+          state.site = site;
+          toast("Kontak & brand tersimpan.");
+        } catch (err) {
+          toast(err.message, true);
+        }
+      });
+
+      // ---------- Daftar produk ----------
+      function renderDaftarProduk() {
+        const box = $("#daftar-produk");
+        box.innerHTML = "";
+        state.produk.produk.forEach((p, i) => {
+          const b = document.createElement("button");
+          b.className = i === idx ? "aktif" : "";
+          const nama = document.createElement("span");
+          nama.textContent = p.nama || p.slug;
+          const kecil = document.createElement("small");
+          kecil.textContent = p.slug;
+          b.append(nama, kecil);
+          b.addEventListener("click", () => pilihProduk(i));
+          box.appendChild(b);
+        });
+        $("#jumlah-produk").textContent = `— ${state.produk.produk.length} item`;
+      }
+
+      function isiSelectKategori(sel, nilai) {
+        sel.innerHTML = state.produk.kategori
+          .map((k) => `<option value="${k.slug}">${k.nama}</option>`)
+          .join("");
+        sel.value = nilai ?? "";
+      }
+
+      function pilihProduk(i) {
+        idx = i;
+        renderDaftarProduk();
+        const p = state.produk.produk[i];
+        if (!p) return;
+        $("#p-nama").value = p.nama ?? "";
+        $("#p-slug").value = p.slug ?? "";
+        isiSelectKategori($("#p-kategori"), p.kategori);
+        $("#p-badge").value = p.badge ?? "";
+        $("#p-harga").value = p.harga ?? "";
+        $("#p-hargaCoret").value = p.hargaCoret ?? "";
+        $("#p-stok").value = p.stok ?? "";
+        $("#p-terjual").value = p.terjual ?? "";
+        $("#p-rating").value = p.rating ?? "";
+        $("#p-tanggalMasuk").value = p.tanggalMasuk ?? "";
+        $("#p-bahan").value = p.bahan ?? "";
+        $("#p-warna").value = (p.warna ?? []).join(", ");
+        $("#p-ukuran").value = (p.ukuran ?? []).join(", ");
+        $("#p-ringkas").value = p.ringkas ?? "";
+        $("#p-deskripsi").value = p.deskripsi ?? "";
+        $("#p-perawatan").value = (p.perawatan ?? []).join("\n");
+        $("#p-catatan").value = (p.catatan ?? []).join("\n");
+        renderGambar(p.slug);
+      }
+
+      const pisah = (s) => s.split(",").map((x) => x.trim()).filter(Boolean);
+
+      $("#simpan-produk").addEventListener("click", async () => {
+        const p = state.produk.produk[idx];
+        if (!p) return;
+        const slugBaru = $("#p-slug").value.trim().toLowerCase();
+        if (!/^[a-z0-9][a-z0-9-]*$/.test(slugBaru)) return toast("Slug hanya huruf kecil, angka, dan tanda minus.", true);
+        if (state.produk.produk.some((x, i) => i !== idx && x.slug === slugBaru)) return toast("Slug sudah dipakai produk lain.", true);
+
+        Object.assign(p, {
+          nama: $("#p-nama").value.trim(),
+          slug: slugBaru,
+          kategori: $("#p-kategori").value,
+          badge: $("#p-badge").value || null,
+          harga: Number($("#p-harga").value || 0),
+          hargaCoret: $("#p-hargaCoret").value === "" ? null : Number($("#p-hargaCoret").value),
+          stok: Number($("#p-stok").value || 0),
+          terjual: Number($("#p-terjual").value || 0),
+          rating: Number($("#p-rating").value || 0),
+          tanggalMasuk: $("#p-tanggalMasuk").value,
+          bahan: $("#p-bahan").value.trim(),
+          warna: pisah($("#p-warna").value),
+          ukuran: pisah($("#p-ukuran").value),
+          ringkas: $("#p-ringkas").value.trim(),
+          deskripsi: $("#p-deskripsi").value.trim(),
+          perawatan: $("#p-perawatan").value.split("\n").map((x) => x.trim()).filter(Boolean),
+          catatan: $("#p-catatan").value.split("\n").map((x) => x.trim()).filter(Boolean),
+        });
+        try {
+          await api("/api/produk", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(state.produk),
+          });
+          renderDaftarProduk();
+          renderGambar(p.slug);
+          toast("Produk tersimpan.");
+        } catch (err) {
+          toast(err.message, true);
+        }
+      });
+
+      $("#produk-tambah").addEventListener("click", () => {
+        const slug = `produk-baru-${state.produk.produk.length + 1}`;
+        state.produk.produk.push({
+          slug,
+          nama: "Produk Baru",
+          kategori: state.produk.kategori[0]?.slug ?? "dress",
+          harga: 0,
+          hargaCoret: null,
+          badge: "Baru",
+          bahan: "",
+          warna: [],
+          ukuran: ["S", "M", "L"],
+          stok: 0,
+          terjual: 0,
+          rating: 5,
+          tanggalMasuk: new Date().toISOString().slice(0, 10),
+          ringkas: "",
+          deskripsi: "",
+          perawatan: [],
+          catatan: [],
+        });
+        pilihProduk(state.produk.produk.length - 1);
+      });
+
+      $("#hapus-produk").addEventListener("click", async () => {
+        const p = state.produk.produk[idx];
+        if (!p) return;
+        if (!confirm(`Hapus produk "${p.nama || p.slug}"? Foto produknya tidak ikut terhapus.`)) return;
+        state.produk.produk.splice(idx, 1);
+        try {
+          await api("/api/produk", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(state.produk),
+          });
+          pilihProduk(0);
+          toast("Produk dihapus.");
+        } catch (err) {
+          toast(err.message, true);
+        }
+      });
+
+      // ---------- Foto ----------
+      async function renderGambar(slug) {
+        const box = $("#gambar-area");
+        box.innerHTML = '<p class="kosong">Memuat foto…</p>';
+        let data;
+        try {
+          data = await api(`/api/gambar?slug=${encodeURIComponent(slug)}`);
+        } catch {
+          data = { utama: null, galeri: [] };
+        }
+        box.innerHTML = "";
+        const grid = document.createElement("div");
+        grid.className = "gambar-grid";
+
+        if (data.utama) grid.appendChild(kartuGambar(slug, data.utama, "Utama"));
+        data.galeri.forEach((f, i) => grid.appendChild(kartuGambar(slug, f, `Galeri ${i + 1}`)));
+        if (!data.utama && !data.galeri.length) {
+          const k = document.createElement("p");
+          k.className = "kosong";
+          k.textContent = "Belum ada foto. Unggah foto utama di bawah.";
+          box.appendChild(k);
+        }
+        box.appendChild(grid);
+
+        // Unggah
+        const baris = document.createElement("div");
+        baris.className = "aksi";
+        baris.innerHTML = `
+          <input type="file" accept="image/*" class="sembunyi" id="f-up" multiple />
+          <button class="btn" id="f-utama">Unggah foto utama</button>
+          <button class="btn" id="f-galeri">Tambah foto galeri</button>`;
+        box.appendChild(baris);
+        $("#f-utama").addEventListener("click", () => pilihBerkas(slug, "main"));
+        $("#f-galeri").addEventListener("click", () => pilihBerkas(slug, "galeri"));
+      }
+
+      function kartuGambar(slug, file, cap) {
+        const d = document.createElement("div");
+        d.className = "kartu-gambar";
+        const img = document.createElement("img");
+        img.src = `/api/asset?file=${encodeURIComponent(file)}`;
+        img.alt = cap;
+        const c = document.createElement("div");
+        c.className = "cap";
+        c.textContent = cap;
+        const h = document.createElement("button");
+        h.className = "hapus";
+        h.title = "Hapus foto";
+        h.textContent = "×";
+        h.addEventListener("click", async () => {
+          if (!confirm(`Hapus foto ${cap}?`)) return;
+          try {
+            await api(`/api/hapus?file=${encodeURIComponent(file)}`, { method: "POST" });
+            toast("Foto dihapus.");
+            renderGambar(slug);
+          } catch (err) {
+            toast(err.message, true);
+          }
+        });
+        d.append(img, c, h);
+        return d;
+      }
+
+      function pilihBerkas(slug, kind) {
+        const inp = document.createElement("input");
+        inp.type = "file";
+        inp.accept = "image/*";
+        inp.multiple = true;
+        inp.addEventListener("change", async () => {
+          const files = [...inp.files];
+          if (!files.length) return;
+          toast(`Mengunggah ${files.length} foto…`);
+          try {
+            for (const f of files) {
+              const res = await fetch(`/api/upload?slug=${encodeURIComponent(slug)}&kind=${kind}`, {
+                method: "POST",
+                body: f,
+              });
+              const d = await res.json().catch(() => ({}));
+              if (!res.ok) throw new Error(d.error || "Gagal mengunggah.");
+            }
+            toast("Foto tersimpan.");
+            renderGambar(slug);
+          } catch (err) {
+            toast(err.message, true);
+          }
+        });
+        inp.click();
+      }
+
+      // ---------- Kategori ----------
+      function renderKategoriList() {
+        const box = $("#kategori-list");
+        box.innerHTML = "";
+        state.produk.kategori.forEach((k, i) => {
+          const d = document.createElement("div");
+          d.className = "kategori-baris";
+          d.innerHTML =
+            '<input class="k-slug" placeholder="slug" />' +
+            '<input class="k-nama" placeholder="Nama" />' +
+            '<input class="k-desk" placeholder="Deskripsi" />' +
+            '<button class="x" data-k="1" title="Hapus">×</button>';
+          d.querySelector(".k-slug").value = k.slug;
+          d.querySelector(".k-nama").value = k.nama;
+          d.querySelector(".k-desk").value = k.deskripsi ?? "";
+          d.dataset.ikon = k.ikon ?? k.slug;
+          box.appendChild(d);
+        });
+      }
+      $("#kategori-tambah").addEventListener("click", () => {
+        state.produk.kategori.push({ slug: "", nama: "", deskripsi: "", ikon: "dress" });
+        renderKategoriList();
+      });
+      $("#simpan-kategori").addEventListener("click", async () => {
+        const rows = $$("#kategori-list .kategori-baris");
+        const baru = rows
+          .map((r) => ({
+            slug: r.querySelector(".k-slug").value.trim().toLowerCase(),
+            nama: r.querySelector(".k-nama").value.trim(),
+            deskripsi: r.querySelector(".k-desk").value.trim(),
+            ikon: r.dataset.ikon || r.querySelector(".k-slug").value.trim().toLowerCase(),
+          }))
+          .filter((k) => k.slug && k.nama);
+        const slugs = new Set(baru.map((k) => k.slug));
+        if (slugs.size !== baru.length) return toast("Slug kategori tidak boleh sama.", true);
+        simpanKategori(baru);
+      });
+      async function simpanKategori(list) {
+        state.produk.kategori = list;
+        try {
+          await api("/api/produk", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(state.produk),
+          });
+          renderKategoriList();
+          isiSelectKategori($("#p-kategori"), state.produk.produk[idx]?.kategori);
+          toast("Kategori tersimpan.");
+        } catch (err) {
+          toast(err.message, true);
+        }
+      }
+
+      // ---------- Rebuild ----------
+      $("#rebuild").addEventListener("click", async () => {
+        const b = $("#rebuild");
+        b.disabled = true;
+        b.textContent = "Membangun…";
+        toast("Membangun ulang situs, mohon tunggu…");
+        try {
+          const d = await api("/api/rebuild", { method: "POST" });
+          toast(d.output || "Selesai.");
+        } catch (err) {
+          toast(err.message, true);
+        } finally {
+          b.disabled = false;
+          b.textContent = "Bangun ulang situs";
+        }
+      });
+
+      muat().catch((e) => toast(`Gagal memuat data: ${e.message}`, true));
+    </script>
+  </body>
+</html>

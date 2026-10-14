@@ -31,21 +31,24 @@ Internet / Tailnet / Cloudflare
 
 ```
 ├── src/
-│   ├── assets/produk/     # Foto produk (WebP). Isi placeholder = hasil generate.
+│   ├── assets/produk/     # Foto produk (WebP): <slug>.webp + <slug>-NN.webp (galeri)
 │   ├── data/
-│   │   ├── produk.json    # >>> Sumber konten produk (12 item, 6 kategori)
+│   │   ├── produk.json    # >>> Sumber konten produk (12 item, 7 kategori)
 │   │   ├── produk.ts      # Loader: cari, terlaris, promo, ukuran
-│   │   ├── site.ts        # Nama brand, kontak, WA, sosmed, URL absolut
+│   │   ├── site.json      # >>> Identitas, kontak, sosmed, jam buka (editable via admin)
+│   │   ├── site.ts        # Loader + tipe untuk site.json, NAVIGASI, linkWa, urlAbsolut
 │   │   ├── konten.ts      # Keunggulan, testimoni, promo, FAQ, alur belanja
 │   │   └── tentang.ts     # Profil brand, tim, nilai
 │   ├── components/        # Header, Footer, ProdukCard, Ikon, dll.
-│   ├── layouts/           # BaseLayout (SEO + JSON-LD ClothingStore)
+│   ├── layouts/           # BaseLayout (SEO + JSON-LD ClothingStore + preload font)
 │   ├── lib/format.ts      # Rupiah, tanggal, URL
 │   ├── pages/             # index, katalog, produk/[slug], tentang, kontak, 404, robots, rss
 │   └── styles/global.css  # Tema Tailwind v4 (OKLCH) + utility custom
 ├── scripts/
+│   ├── admin/                       # Panel admin lokal (server.mjs + ui.html)
 │   ├── generate-sample-images.mjs   # Placeholder produk saat belum ada foto asli
-│   └── generate-static-assets.mjs   # og-image, logo, apple-touch-icon
+│   └── generate-static-assets.mjs   # og-image, logo, apple-touch-icon, ikon PWA
+├── public/                # manifest.webmanifest, ikon PWA, favicon, robots
 ├── nginx/
 │   ├── web/               # Config untuk service `web` (statis)
 │   └── proxy/             # Dockerfile + config untuk service `proxy`
@@ -150,31 +153,68 @@ Di `nginx/proxy/conf.d/default.conf` ada blok `server` untuk HTTPS yang masih di
 
 ---
 
-## Kelola Konten Produk
+## Panel Admin Lokal (paling gampang)
 
-Semua isi toko ada di `src/data/produk.json`. Satu produk contoh:
+Daripada mengedit JSON manual, jalankan panel admin — sebuah server kecil yang
+hanya hidup di `127.0.0.1` (tidak terekspos ke jaringan) untuk mengubah kontak,
+brand, produk, dan mengunggah foto.
+
+```bash
+npm run admin        # buka http://127.0.0.1:4322
+```
+
+- **Kontak & Brand** — nama, tagline, deskripsi, alamat, WhatsApp, email, sosmed, jam buka.
+- **Produk & Foto** — tambah/ubah/hapus produk, atur harga, stok, warna, ukuran, badge.
+  Foto yang diunggah otomatis dipotong **4:5** dan dikonversi ke **WebP** (lebar 1100px),
+  jadi tidak perlu mengolah gambar manual.
+- Tombol **Bangun ulang situs** menjalankan `docker compose up -d --build web`.
+  Bila sedang menjalankan `npm run dev`, cukup muat ulang halaman (JSON ikut hot-reload).
+
+Semua perubahan ditulis ke `src/data/site.json` dan `src/data/produk.json`.
+Butuh `sharp` (sudah ada sebagai devDependency). Ganti port dengan `ADMIN_PORT=4444 npm run admin`.
+
+> Panel ini **sengaja tidak punya autentikasi** karena hanya bind ke localhost. Jangan
+> pernah mengeksposnya ke jaringan publik.
+
+---
+
+## Kelola Konten Produk (manual)
+
+Semua isi toko ada di `src/data/produk.json`, identitas toko di `src/data/site.json`.
+Satu produk contoh:
 
 ```json
 {
   "slug": "midi-dress-sifon-rosa",
   "nama": "Midi Dress Sifon Rosa",
   "kategori": "dress",
-  "harga": 259000,
-  "hargaAsli": 325000,
-  "warna": ["Rosa", "Sand"],
+  "harga": 289000,
+  "hargaCoret": 375000,
+  "badge": "Terlaris",
+  "bahan": "Sifon premium dengan lining satin",
+  "warna": ["Dusty Rose", "Ivory", "Sage"],
   "ukuran": ["S", "M", "L", "XL"],
-  "stok": true,
+  "stok": 24,
+  "terjual": 312,
+  "rating": 4.9,
+  "tanggalMasuk": "2026-08-14",
+  "ringkas": "Midi dress sifon dengan aksen ruffle halus.",
   "deskripsi": "...",
-  "berat": 300
+  "perawatan": ["Cuci tangan atau delicate cycle", "Setrika suhu sedang"],
+  "catatan": ["Sudah termasuk lining penuh"]
 }
 ```
 
-Detail field: lihat komentar/type di `src/data/produk.ts`.
+Detail field: lihat `interface Produk` di `src/data/produk.ts`.
+`badge` boleh `"Baru"`, `"Terlaris"`, `"Promo"`, atau `null`.
 
 Tambah produk baru:
 
 1. Tambahkan entri di `src/data/produk.json`.
-2. Letakkan foto asli (foto hape juga oke, usahakan rasio 4:5) di `src/assets/produk/` dengan nama **`<slug>.webp`**. Astro otomatis mengoptimasi & membuat `srcset` responsif.
+2. Letakkan foto asli (foto hape juga oke, usahakan rasio 4:5) di `src/assets/produk/`:
+   - Foto utama: **`<slug>.webp`**.
+   - Foto galeri tambahan: **`<slug>-01.webp`**, **`<slug>-02.webp`**, dst.
+   Astro otomatis mengoptimasi & membuat `srcset` responsif.
    - Tidak punya foto? Jalankan `npm run gen:gambar` untuk membuat placeholder WebP otomatis dari `produk.json`.
 3. Cek & rebuild:
 
@@ -183,8 +223,8 @@ Tambah produk baru:
    docker compose up -d --build web
    ```
 
-> Ganti teks brand/kontak di `src/data/site.ts` (nama, alamat, WA, Instagram, TikTok). Teks marketing di `konten.ts` & `tentang.ts`.
-> `scripts/generate-static-assets.mjs` membuat `og-default.png`, `logo.png`, `apple-touch-icon.png` — jalankan ulang bila mengubah brand.
+> Ganti teks brand/kontak di `src/data/site.json` (nama, alamat, WA, Instagram, TikTok). Teks marketing di `konten.ts` & `tentang.ts`.
+> `scripts/generate-static-assets.mjs` membuat `og-default.png`, `logo.png`, `apple-touch-icon.png`, dan ikon PWA (`icon-192.png`, `icon-512.png`, `icon-maskable-512.png`) — jalankan `npm run gen:aset` bila mengubah brand.
 
 ---
 
@@ -210,7 +250,9 @@ Tambah produk baru:
 | Perintah | Fungsi |
 |---|---|
 | `npm run dev` | Dev server Astro |
+| `npm run admin` | Panel admin lokal (`http://127.0.0.1:4322`) |
 | `npm run check` | Cek tipe/kondisi kode |
 | `npm run build` | Build statis ke `dist/` |
 | `npm run preview` | Preview hasil build |
 | `npm run gen:gambar` | Generate placeholder produk dari `produk.json` |
+| `npm run gen:aset` | Generate og-image, logo, apple-touch-icon, ikon PWA |

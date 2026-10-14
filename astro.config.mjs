@@ -18,7 +18,9 @@ export default defineConfig({
   },
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: 'viewport',
+    // 'hover' (bukan 'viewport') agar tidak mengunduh semua tautan di layar —
+    // lebih hemat data, terutama di perangkat seluler.
+    defaultStrategy: 'hover',
   },
   integrations: [
     sitemap({

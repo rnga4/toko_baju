@@ -5,11 +5,12 @@ interface Props {
   label?: string;
   deskripsi?: string;
   kelas?: string;
-  level?: 2 | 3;
+  level?: 1 | 2 | 3;
+  id?: string;
 }
 
-const { judul, aligns = 'tengah', label, deskripsi, kelas = '', level = 2 } = Astro.props;
-const Tag = `h${level}` as 'h2' | 'h3';
+const { judul, aligns = 'tengah', label, deskripsi, kelas = '', level = 2, id } = Astro.props;
+const Tag = `h${level}` as 'h1' | 'h2' | 'h3';
 ---
 
 <div class:list={['max-w-2xl', aligns === 'tengah' && 'mx-auto text-center', kelas]}>
@@ -22,7 +23,7 @@ const Tag = `h${level}` as 'h2' | 'h3';
       </p>
     )
   }
-  <Tag class="text-[1.75rem] leading-tight text-balance text-sand-900 sm:text-[2.125rem] lg:text-[2.5rem]">
+  <Tag id={id} class="text-[1.75rem] leading-tight text-balance text-sand-900 sm:text-[2.125rem] lg:text-[2.5rem]">
     {judul}
   </Tag>
   {

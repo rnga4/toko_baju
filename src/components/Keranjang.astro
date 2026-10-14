@@ -12,6 +12,7 @@ import Ikon from './Ikon.astro';
   <button
     type="button"
     data-keranjang-tutup
+    tabindex="-1"
     aria-label="Tutup keranjang"
     class="absolute inset-0 h-full w-full cursor-default bg-ink/40 opacity-0 transition-opacity duration-300"
     data-keranjang-backdrop
@@ -22,6 +23,7 @@ import Ikon from './Ikon.astro';
     role="dialog"
     aria-modal="true"
     aria-label="Keranjang belanja"
+    tabindex="-1"
     class="absolute top-0 right-0 flex h-full w-full max-w-md translate-x-full flex-col bg-kertas shadow-angkat transition-transform duration-300 ease-out"
     data-keranjang-panel
   >
@@ -176,12 +178,23 @@ import Ikon from './Ikon.astro';
       checkout.href = `https://wa.me/${wa}?text=${encodeURIComponent(teks)}`;
     };
 
+    let fokusSebelum: HTMLElement | null = null;
+
+    const fokusable = (): HTMLElement[] =>
+      panel
+        ? [...panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')].filter(
+            (el) => el.offsetParent !== null,
+          )
+        : [];
+
     const buka = () => {
+      fokusSebelum = document.activeElement as HTMLElement | null;
       root.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => {
         panel?.classList.remove('translate-x-full');
         backdrop?.classList.remove('opacity-0');
+        panel?.focus();
       });
     };
     const tutup = () => {
@@ -189,6 +202,7 @@ import Ikon from './Ikon.astro';
       backdrop?.classList.add('opacity-0');
       document.body.style.removeProperty('overflow');
       window.setTimeout(() => root.classList.add('hidden'), 300);
+      fokusSebelum?.focus?.();
     };
 
     root.querySelectorAll('[data-keranjang-tutup]').forEach((el) => el.addEventListener('click', tutup));
@@ -196,7 +210,25 @@ import Ikon from './Ikon.astro';
       .querySelectorAll('[data-keranjang-tombol]')
       .forEach((el) => el.addEventListener('click', buka));
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !root.classList.contains('hidden')) tutup();
+      if (root.classList.contains('hidden')) return;
+      if (e.key === 'Escape') {
+        tutup();
+        return;
+      }
+      // Tahan fokus (focus trap) di dalam dialog saat terbuka.
+      if (e.key === 'Tab' && panel) {
+        const f = fokusable();
+        if (!f.length) return;
+        const pertama = f[0]!;
+        const terakhir = f[f.length - 1]!;
+        if (e.shiftKey && document.activeElement === pertama) {
+          e.preventDefault();
+          terakhir.focus();
+        } else if (!e.shiftKey && document.activeElement === terakhir) {
+          e.preventDefault();
+          pertama.focus();
+        }
+      }
     });
 
     const tambah = (item: Omit<Item, 'qty'>, qty = 1) => {

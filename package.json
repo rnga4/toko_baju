@@ -14,7 +14,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
-    "gen:gambar": "node scripts/generate-sample-images.mjs"
+    "admin": "node scripts/admin/server.mjs",
+    "gen:gambar": "node scripts/generate-sample-images.mjs",
+    "gen:aset": "node scripts/generate-static-assets.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "4.0.19",

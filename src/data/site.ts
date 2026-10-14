@@ -1,31 +1,39 @@
 /**
  * Konfigurasi global situs. Satu sumber kebenaran untuk SEO, kontak, dan branding.
+ *
+ * Datanya diambil dari `site.json` supaya bisa diedit lewat panel admin lokal
+ * (`npm run admin`) tanpa membongkar kode. Import/modul tetap lewat file ini.
  */
+import data from './site.json';
 
-export const SITE = {
-  nama: 'Mekar',
-  namaLengkap: 'Mekar Boutique',
-  tagline: 'Busana wanita yang mekar bersama gaya Anda.',
-  deskripsi:
-    'Mekar Boutique adalah toko busana wanita lokal: dress, gamis, blouse, kemeja, dan outerwear dengan bahan premium serta jahitan rapi. Dikirim ke seluruh Indonesia.',
-  bahasa: 'id-ID',
-  lokasi: 'Bandung, Jawa Barat, Indonesia',
-  alamat: 'Jl. Cikutra Baru Raya No. 12, Bandung, Jawa Barat 40124',
-  telepon: '+62 811-2000-1234',
-  whatsapp: '6281120001234',
-  email: 'halo@mekarboutique.id',
-  jamBuka: [
-    { hari: 'Senin - Jumat', jam: '09.00 - 20.00 WIB' },
-    { hari: 'Sabtu', jam: '09.00 - 17.00 WIB' },
-    { hari: 'Minggu & Hari Libur', jam: 'Tutup' },
-  ],
-  mediaSosial: {
-    instagram: 'https://instagram.com/mekarboutique',
-    tiktok: 'https://tiktok.com/@mekarboutique',
-    whatsapp: 'https://wa.me/6281120001234',
-  },
-  gratisOngkirMinimal: 300000,
-} as const;
+export interface JamBuka {
+  hari: string;
+  jam: string;
+}
+
+export interface MediaSosial {
+  instagram: string;
+  tiktok: string;
+  whatsapp: string;
+}
+
+export interface Situs {
+  nama: string;
+  namaLengkap: string;
+  tagline: string;
+  deskripsi: string;
+  bahasa: string;
+  lokasi: string;
+  alamat: string;
+  telepon: string;
+  whatsapp: string;
+  email: string;
+  jamBuka: JamBuka[];
+  mediaSosial: MediaSosial;
+  gratisOngkirMinimal: number;
+}
+
+export const SITE: Situs = data;
 
 export const NAVIGASI = [
   { label: 'Beranda', href: '/' },
