@@ -96,7 +96,7 @@ const gayaBadge: Record<string, string> = {
       <span class="text-xs text-sand-600">({produk.terjual} terjual)</span>
     </div>
 
-    <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+    <div class="mt-auto flex flex-col gap-3 pt-4 sm:flex-row sm:items-end sm:justify-between sm:gap-2">
       <div>
         <p class="font-serif text-[1.1875rem] leading-none font-semibold text-rose-800">
           {rupiah(produk.harga)}
@@ -108,12 +108,12 @@ const gayaBadge: Record<string, string> = {
         }
       </div>
 
-      <div class="flex shrink-0 items-center gap-1.5">
+      <div class="flex shrink-0 items-center gap-2">
         <a
           href={linkWa(`Halo, saya mau pesan ${produk.nama}.`)}
           target="_blank"
           rel="noopener"
-          class="relative z-10 inline-flex size-9 items-center justify-center rounded-full bg-rose-50 text-rose-700 transition-colors hover:bg-rose-700 hover:text-white"
+          class="relative z-10 inline-flex size-10 items-center justify-center rounded-full bg-rose-50 text-rose-700 transition-colors hover:bg-rose-700 hover:text-white"
           aria-label={`Pesan ${produk.nama} via WhatsApp`}
         >
           <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true">
@@ -130,7 +130,7 @@ const gayaBadge: Record<string, string> = {
           data-nama={produk.nama}
           data-harga={produk.harga}
           data-gambar={produk.gambar.src}
-          class="relative z-10 inline-flex size-9 items-center justify-center rounded-full bg-rose-700 text-white transition-colors hover:bg-rose-800"
+          class="relative z-10 inline-flex size-10 items-center justify-center rounded-full bg-rose-700 text-white transition-colors hover:bg-rose-800"
           aria-label={`Tambah ${produk.nama} ke keranjang`}
           title="Tambah ke keranjang"
         >

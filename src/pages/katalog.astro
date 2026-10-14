@@ -52,8 +52,8 @@ const total = semuaProduk.length;
 
   <!-- Toolbar: cari + urutkan -->
   <div class="sticky top-18 z-30 border-y border-sand-200 bg-kertas/90 backdrop-blur-md">
-    <form method="get" action="/katalog" data-filter-form class="wadah flex items-center gap-3 py-3">
-      <div class="relative flex-1">
+    <form method="get" action="/katalog" data-filter-form class="wadah flex items-center gap-2 py-3 sm:gap-3">
+      <div class="relative min-w-0 flex-1">
         <label for="cari" class="sr-only">Cari produk</label>
         <Ikon
           nama="cari"
@@ -73,12 +73,12 @@ const total = semuaProduk.length;
       <select
         id="urut"
         name="urut"
-        class="shrink-0 rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm text-sand-800 focus:border-rose-300 focus:outline-none"
+        class="min-w-0 max-w-[9rem] shrink-0 rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm text-sand-800 focus:border-rose-300 focus:outline-none sm:max-w-none"
       >
         {urutOpsi.map((o) => <option value={o.value} selected={urut === o.value}>{o.label}</option>)}
       </select>
 
-      <button type="submit" class="tombol tombol-utama shrink-0 py-2.5">Cari</button>
+      <button type="submit" class="tombol tombol-utama hidden shrink-0 py-2.5 sm:inline-flex">Cari</button>
     </form>
   </div>
 
@@ -90,7 +90,7 @@ const total = semuaProduk.length;
           href={buatUrl({ kategori: 'semua' })}
           data-chip-kategori="semua"
           class:list={[
-            'inline-flex rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+            'inline-flex rounded-full border px-4 py-2.5 text-sm font-medium transition-colors',
             kat === 'semua'
               ? 'border-rose-700 bg-rose-700 text-white'
               : 'border-sand-200 bg-white text-sand-700 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800',
@@ -106,7 +106,7 @@ const total = semuaProduk.length;
               href={buatUrl({ kategori: k.slug })}
               data-chip-kategori={k.slug}
               class:list={[
-                'inline-flex rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+                'inline-flex rounded-full border px-4 py-2.5 text-sm font-medium transition-colors',
                 kat === k.slug
                   ? 'border-rose-700 bg-rose-700 text-white'
                   : 'border-sand-200 bg-white text-sand-700 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800',

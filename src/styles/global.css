@@ -151,7 +151,25 @@ html[data-tema='minimalis'] {
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Cegah geser horizontal tak sengaja di layar kecil */
+  body {
+    overflow-x: clip;
+  }
+
+  /* Hapus kilatan tap & delay 300ms di perangkat sentuh */
+  a,
+  button,
+  [role='button'],
+  input,
+  select,
+  textarea,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   @media (prefers-reduced-motion: reduce) {

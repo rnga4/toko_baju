@@ -45,7 +45,7 @@ const aktif = (href: string) => href === pathSekarang;
       <button
         type="button"
         data-keranjang-tombol
-        class="relative inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700"
+        class="relative inline-flex size-11 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700"
         aria-label="Buka keranjang"
       >
         <Ikon nama="keranjang" kelas="size-5" />
@@ -61,7 +61,7 @@ const aktif = (href: string) => href === pathSekarang;
       <button
         type="button"
         data-tema-tombol
-        class="inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700"
+        class="inline-flex size-11 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700"
         aria-label="Ganti tema warna"
         aria-pressed="false"
         title="Ganti tema warna"
@@ -76,7 +76,7 @@ const aktif = (href: string) => href === pathSekarang;
 
       <button
         type="button"
-        class="inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700 md:hidden"
+        class="inline-flex size-11 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-rose-50 hover:text-rose-700 md:hidden"
         aria-label="Buka menu"
         aria-expanded="false"
         aria-controls="menu-mobile"
@@ -94,7 +94,7 @@ const aktif = (href: string) => href === pathSekarang;
           <a
             href={item.href}
             class:list={[
-              'rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
+              'rounded-xl px-3 py-3 text-sm font-medium transition-colors',
               aktif(item.href) ? 'bg-rose-50 text-rose-800' : 'text-sand-700 hover:bg-sand-100',
             ]}
             aria-current={aktif(item.href) ? 'page' : undefined}

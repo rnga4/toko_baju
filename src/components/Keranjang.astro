@@ -25,7 +25,7 @@ import Ikon from './Ikon.astro';
     class="absolute top-0 right-0 flex h-full w-full max-w-md translate-x-full flex-col bg-kertas shadow-angkat transition-transform duration-300 ease-out"
     data-keranjang-panel
   >
-    <header class="flex items-center justify-between border-b border-sand-200 px-5 py-4">
+    <header class="flex items-center justify-between border-b border-sand-200 px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-4">
       <h2 class="flex items-center gap-2 font-serif text-xl text-sand-900">
         <Ikon nama="keranjang" kelas="size-5 text-rose-700" />
         Keranjang
@@ -33,16 +33,16 @@ import Ikon from './Ikon.astro';
       <button
         type="button"
         data-keranjang-tutup
-        class="inline-flex size-9 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-sand-100"
+        class="inline-flex size-10 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-sand-100"
         aria-label="Tutup keranjang"
       >
         <Ikon nama="tutup" kelas="size-5" />
       </button>
     </header>
 
-    <div class="flex-1 overflow-y-auto px-5" data-keranjang-isi></div>
+    <div class="flex-1 overflow-y-auto overscroll-contain px-5" data-keranjang-isi></div>
 
-    <div class="border-t border-sand-200 p-5" data-keranjang-kaki>
+    <div class="border-t border-sand-200 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]" data-keranjang-kaki>
       <div class="flex items-center justify-between">
         <span class="text-sm text-sand-600">Total</span>
         <span class="font-serif text-2xl font-semibold text-rose-800" data-keranjang-total>Rp0</span>
@@ -148,17 +148,17 @@ import Ikon from './Ikon.astro';
                   ${it.varian ? `<span class="mt-0.5 block text-xs font-normal text-sand-600">${esc(it.varian)}</span>` : ''}
                 </p>
                 <button type="button" data-item-hapus
-                  class="shrink-0 text-sand-500 transition-colors hover:text-rose-700"
+                  class="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-sand-500 transition-colors hover:bg-sand-100 hover:text-rose-700"
                   aria-label="Hapus ${esc(it.nama)}">${svgHapus}</button>
               </div>
               <p class="mt-0.5 text-sm font-semibold text-rose-800">${rp(it.harga)}</p>
               <div class="mt-auto flex items-center justify-between gap-2 pt-2">
                 <div class="inline-flex items-center rounded-full border border-sand-200">
                   <button type="button" data-item-kurang aria-label="Kurangi jumlah"
-                    class="inline-flex size-7 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-sand-100">${svgKurang}</button>
-                  <span class="w-7 text-center text-sm tabular-nums text-sand-800">${it.qty}</span>
+                    class="inline-flex size-8 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-sand-100">${svgKurang}</button>
+                  <span class="w-8 text-center text-sm tabular-nums text-sand-800">${it.qty}</span>
                   <button type="button" data-item-tambah aria-label="Tambah jumlah"
-                    class="inline-flex size-7 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-sand-100">${svgTambah}</button>
+                    class="inline-flex size-8 items-center justify-center rounded-full text-sand-700 transition-colors hover:bg-sand-100">${svgTambah}</button>
                 </div>
                 <span class="text-xs text-sand-600">Subtotal ${rp(it.harga * it.qty)}</span>
               </div>
