@@ -60,6 +60,14 @@ import Ikon from './Ikon.astro';
   </aside>
 </div>
 
+<div
+  data-toast-root
+  role="status"
+  aria-live="polite"
+  class="pointer-events-none fixed inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-[80] flex flex-col gap-2 sm:inset-x-auto sm:left-6 sm:bottom-6 sm:w-full sm:max-w-sm"
+>
+</div>
+
 <script>
   interface Item {
     slug: string;
@@ -80,6 +88,7 @@ import Ikon from './Ikon.astro';
     const checkout = root.querySelector<HTMLAnchorElement>('[data-keranjang-checkout]');
     const wa = root.dataset.wa ?? '';
     const brand = root.dataset.brand ?? '';
+    const toastRoot = document.querySelector<HTMLElement>('[data-toast-root]');
 
     const rp = (n: number) => 'Rp' + new Intl.NumberFormat('id-ID').format(n);
     const esc = (s: string) =>
@@ -231,13 +240,52 @@ import Ikon from './Ikon.astro';
       }
     });
 
+    const svgCentang = '<svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l4.5 4.5 10-10"/></svg>';
+
+    const toast = (pesan: string, sub: string, gambar?: string) => {
+      if (!toastRoot) return;
+      const el = document.createElement('div');
+      el.className =
+        'pointer-events-auto flex translate-y-2 items-center gap-3 rounded-xl border border-sand-200 bg-kertas p-3 opacity-0 shadow-angkat transition duration-200 ease-out';
+      el.innerHTML = `
+        ${
+          gambar
+            ? `<img src="${esc(gambar)}" alt="" width="40" height="50" class="h-12 w-10 shrink-0 rounded-lg bg-sand-100 object-cover" />`
+            : `<span class="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-700">${svgCentang}</span>`
+        }
+        <div class="min-w-0 flex-1">
+          <p class="flex items-center gap-1.5 text-sm font-medium text-sand-900">
+            ${gambar ? `<span class="text-rose-700">${svgCentang}</span>` : ''}${esc(pesan)}
+          </p>
+          <p class="truncate text-xs text-sand-600">${esc(sub)}</p>
+        </div>
+        <button type="button" data-toast-lihat
+          class="shrink-0 rounded-lg px-2.5 py-1.5 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-50">Lihat</button>`;
+      toastRoot.appendChild(el);
+      while (toastRoot.children.length > 3) toastRoot.firstElementChild?.remove();
+
+      requestAnimationFrame(() => el.classList.remove('translate-y-2', 'opacity-0'));
+
+      const hapus = () => {
+        el.classList.add('translate-y-2', 'opacity-0');
+        window.setTimeout(() => el.remove(), 200);
+      };
+      const timer = window.setTimeout(hapus, 4000);
+
+      el.querySelector('[data-toast-lihat]')?.addEventListener('click', () => {
+        window.clearTimeout(timer);
+        hapus();
+        buka();
+      });
+    };
+
     const tambah = (item: Omit<Item, 'qty'>, qty = 1) => {
       const ada = daftar.find((it) => it.slug === item.slug && (it.varian ?? '') === (item.varian ?? ''));
       if (ada) ada.qty += qty;
       else daftar.push({ ...item, qty });
       simpan();
       render();
-      buka();
+      toast('Ditambahkan ke keranjang', item.nama, item.gambar);
     };
 
     // Tombol "Tambah ke keranjang" di seluruh situs.
