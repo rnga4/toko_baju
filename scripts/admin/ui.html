@@ -6,107 +6,172 @@
     <title>Admin — Mekar Boutique</title>
     <style>
       :root {
-        --bg: #f6f4f2;
-        --panel: #ffffff;
-        --garis: #e6e1dc;
-        --teks: #2b2523;
-        --redup: #7a706b;
+        --bg: #f7f7f6;
+        --surface: #ffffff;
+        --border: #e7e5e4;
+        --border-kuat: #d6d3d1;
+        --teks: #1c1917;
+        --redup: #78716c;
         --merek: #9f3756;
-        --merek2: #7a2436;
-        --ok: #1c7c54;
-        --galat: #b3261e;
+        --utama: #1c1917;
+        --galat: #b91c1c;
       }
       * { box-sizing: border-box; }
       body {
         margin: 0;
         background: var(--bg);
         color: var(--teks);
-        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
       }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .85em; background: #f2f1ef; padding: 1px 5px; border-radius: 5px;
+      }
+
+      /* ---------- Header ---------- */
       header.bar {
-        position: sticky; top: 0; z-index: 10;
+        position: sticky; top: 0; z-index: 20;
         display: flex; align-items: center; gap: 16px;
-        padding: 14px 22px;
-        background: var(--merek2); color: #fff;
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, .82);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
       }
-      header.bar h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: .2px; }
-      header.bar .tabs { display: flex; gap: 6px; margin-left: auto; }
-      header.bar .tabs button {
-        background: rgba(255,255,255,.12); color: #fff; border: 0;
-        padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 14px;
+      .brand { display: flex; align-items: center; gap: 10px; }
+      .brand-dot {
+        width: 28px; height: 28px; border-radius: 8px; flex: none;
+        background: linear-gradient(135deg, #b0506c, #7a2436);
       }
-      header.bar .tabs button.aktif { background: #fff; color: var(--merek2); font-weight: 600; }
-      main { max-width: 1080px; margin: 0 auto; padding: 22px; }
-      .panel { background: var(--panel); border: 1px solid var(--garis); border-radius: 14px; padding: 22px; }
-      .panel + .panel { margin-top: 18px; }
-      h2 { font-size: 15px; margin: 0 0 16px; }
-      h2 span { color: var(--redup); font-weight: 400; }
-      label { display: block; font-size: 12.5px; color: var(--redup); margin: 0 0 5px; }
+      header.bar h1 { font-size: 14.5px; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+      header.bar .sub { font-size: 11.5px; color: var(--redup); margin: 0; }
+      .tabs {
+        margin-left: auto; display: inline-flex; gap: 2px;
+        padding: 3px; background: #f1f0ee; border-radius: 10px;
+      }
+      .tabs button {
+        border: 0; background: transparent; cursor: pointer; font: inherit;
+        font-size: 13.5px; font-weight: 500; color: var(--redup);
+        padding: 7px 14px; border-radius: 8px; transition: background .15s, color .15s;
+      }
+      .tabs button:hover { color: var(--teks); }
+      .tabs button.aktif { background: #fff; color: var(--teks); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+      /* ---------- Layout ---------- */
+      main { max-width: 1120px; margin: 0 auto; padding: 24px; }
+      .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 26px 28px; }
+      .panel + .panel { margin-top: 16px; }
+      h2 {
+        font-size: 11.5px; font-weight: 600; letter-spacing: .09em;
+        text-transform: uppercase; color: var(--redup); margin: 0 0 16px;
+      }
+      .panel h2:not(:first-child) { margin-top: 30px; }
+      h2 span { font-weight: 400; letter-spacing: normal; text-transform: none; }
+
+      /* ---------- Form ---------- */
+      label { display: block; font-size: 12.5px; color: var(--redup); margin: 0 0 6px; }
       input, select, textarea {
-        width: 100%; padding: 9px 11px; font: inherit; color: var(--teks);
-        background: #fff; border: 1px solid var(--garis); border-radius: 9px;
+        width: 100%; padding: 9px 12px; font: inherit; color: var(--teks);
+        background: #fff; border: 1px solid var(--border-kuat); border-radius: 9px;
+        transition: border-color .15s, box-shadow .15s;
       }
-      input:focus, select:focus, textarea:focus { outline: 2px solid var(--merek); outline-offset: -1px; border-color: var(--merek); }
-      textarea { resize: vertical; min-height: 74px; }
-      .grid { display: grid; gap: 14px 16px; }
+      input:hover, select:hover, textarea:hover { border-color: #b8b5b2; }
+      input:focus, select:focus, textarea:focus {
+        outline: none; border-color: var(--merek);
+        box-shadow: 0 0 0 3px rgba(159, 55, 86, .13);
+      }
+      textarea { resize: vertical; min-height: 76px; }
+      .grid { display: grid; gap: 16px 18px; }
       .c2 { grid-template-columns: 1fr 1fr; }
-      .c3 { grid-template-columns: 1fr 1fr 1fr; }
+      .c3 { grid-template-columns: repeat(3, 1fr); }
       .full { grid-column: 1 / -1; }
+
+      /* ---------- Tombol ---------- */
       .btn {
-        display: inline-flex; align-items: center; gap: 7px;
-        padding: 9px 16px; border-radius: 9px; border: 1px solid var(--garis);
-        background: #fff; color: var(--teks); cursor: pointer; font: inherit;
+        display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+        padding: 9px 15px; border-radius: 9px; border: 1px solid var(--border-kuat);
+        background: #fff; color: var(--teks); font: inherit; font-size: 14px; font-weight: 500;
+        transition: background .15s, border-color .15s, color .15s;
       }
-      .btn:hover { border-color: var(--redup); }
-      .btn.utama { background: var(--merek); border-color: var(--merek); color: #fff; }
-      .btn.utama:hover { background: var(--merek2); }
+      .btn:hover { background: #fafafa; border-color: #b8b5b2; }
+      .btn.utama { background: var(--utama); border-color: var(--utama); color: #fff; }
+      .btn.utama:hover { background: #000; border-color: #000; }
       .btn.bahaya { color: var(--galat); border-color: #e7c9c6; }
-      .btn.bahaya:hover { background: #fdf1f0; }
-      .aksi { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+      .btn.bahaya:hover { background: #fdf2f2; }
+      .btn:disabled { opacity: .55; cursor: default; }
+      .aksi { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
       .aksi .spacer { margin-left: auto; }
-      .produk-layout { display: grid; grid-template-columns: 260px 1fr; gap: 22px; align-items: start; }
-      .daftar { display: flex; flex-direction: column; gap: 6px; max-height: 65vh; overflow: auto; }
-      .daftar button {
-        text-align: left; padding: 9px 12px; border-radius: 9px; cursor: pointer;
-        background: #fff; border: 1px solid var(--garis); font: inherit; line-height: 1.3;
+
+      /* ---------- Produk ---------- */
+      .produk-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 30px; align-items: start; }
+      .produk-kiri { position: sticky; top: 78px; }
+      .daftar {
+        display: flex; flex-direction: column; gap: 2px; margin: 0 -6px; padding: 0 6px;
+        max-height: calc(100vh - 230px); overflow: auto;
       }
-      .daftar button small { display: block; color: var(--redup); font-size: 11.5px; }
-      .daftar button.aktif { border-color: var(--merek); background: #fdf3f5; box-shadow: inset 3px 0 0 var(--merek); }
-      .gambar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 8px; }
-      .kartu-gambar { position: relative; border: 1px solid var(--garis); border-radius: 10px; overflow: hidden; background: #faf8f6; }
+      .daftar button {
+        display: block; width: 100%; text-align: left; cursor: pointer; font: inherit;
+        font-size: 13.5px; color: var(--teks); padding: 9px 11px; border: 0;
+        border-radius: 8px; background: transparent; transition: background .12s, color .12s;
+      }
+      .daftar button small { display: block; color: var(--redup); font-size: 11px; margin-top: 1px; }
+      .daftar button:hover { background: #f6f5f4; }
+      .daftar button.aktif { background: #fbf3f5; color: var(--merek); box-shadow: inset 2px 0 0 var(--merek); }
+      .daftar button.aktif small { color: var(--merek); opacity: .75; }
+
+      /* ---------- Foto ---------- */
+      .gambar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; margin-top: 14px; }
+      .kartu-gambar { position: relative; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #fafafa; }
       .kartu-gambar img { display: block; width: 100%; aspect-ratio: 4/5; object-fit: cover; }
-      .kartu-gambar .cap { font-size: 11px; padding: 5px 7px; color: var(--redup); }
+      .kartu-gambar .cap { font-size: 11px; padding: 6px 8px; color: var(--redup); }
       .kartu-gambar .hapus {
-        position: absolute; top: 6px; right: 6px; width: 26px; height: 26px;
-        border-radius: 999px; border: 0; cursor: pointer; background: rgba(0,0,0,.55); color: #fff; line-height: 1;
+        position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border: 0;
+        border-radius: 8px; cursor: pointer; line-height: 1; color: #fff;
+        background: rgba(28, 25, 23, .6); backdrop-filter: blur(4px);
       }
       .kartu-gambar .hapus:hover { background: var(--galat); }
-      .kosong { color: var(--redup); font-size: 13px; padding: 10px 0; }
-      .drop {
-        border: 1.5px dashed var(--garis); border-radius: 12px; padding: 18px;
-        text-align: center; color: var(--redup); cursor: pointer; background: #faf8f6;
-      }
-      .drop:hover, .drop.hover { border-color: var(--merek); color: var(--merek); }
+
+      /* ---------- Baris dinamis (jam & kategori) ---------- */
       .kategori-edit { display: flex; flex-direction: column; gap: 8px; }
       .kategori-baris { display: grid; grid-template-columns: 100px 1fr 2fr 34px; gap: 8px; align-items: center; }
-      .kategori-baris input, .kategori-baris textarea { min-height: 0; padding: 7px 9px; }
+      .kategori-baris input { padding: 8px 10px; }
       .x {
-        border: 1px solid var(--garis); background: #fff; border-radius: 8px;
-        width: 34px; height: 34px; cursor: pointer; color: var(--galat); font-size: 16px;
+        width: 34px; height: 34px; border: 1px solid var(--border-kuat); background: #fff;
+        border-radius: 8px; cursor: pointer; color: var(--redup); font-size: 16px; line-height: 1;
+        transition: color .12s, border-color .12s, background .12s;
       }
-      .x:hover { background: #fdf1f0; }
+      .x:hover { color: var(--galat); border-color: #e7c9c6; background: #fdf2f2; }
+
+      /* ---------- Lain-lain ---------- */
+      .kosong { color: var(--redup); font-size: 13px; padding: 8px 0; margin: 0; }
+      .petunjuk { font-size: 12.5px; color: var(--redup); margin: 6px 0 0; line-height: 1.6; }
+      .pisah { border: 0; border-top: 1px solid var(--border); margin: 30px 0; }
+      details summary { cursor: pointer; font-weight: 600; font-size: 13.5px; }
+      details summary span { color: var(--redup); font-weight: 400; }
+      details[open] summary { margin-bottom: 6px; }
+      .sembunyi { display: none !important; }
+
       #toast {
-        position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
-        background: #2b2523; color: #fff; padding: 11px 18px; border-radius: 10px;
-        opacity: 0; pointer-events: none; transition: .22s; max-width: 90vw; font-size: 14px;
+        position: fixed; left: 50%; bottom: 24px; z-index: 50;
+        transform: translateX(-50%) translateY(16px);
+        background: #fff; color: var(--teks); border: 1px solid var(--border-kuat);
+        border-radius: 10px; padding: 11px 16px; max-width: 90vw; font-size: 13.5px;
+        box-shadow: 0 10px 34px -10px rgba(0, 0, 0, .28);
+        opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s;
       }
       #toast.tampil { opacity: 1; transform: translateX(-50%) translateY(0); }
-      #toast.galat { background: var(--galat); }
+      #toast.galat { border-color: #e7c9c6; background: #fdf6f6; color: var(--galat); }
       #toast > div { white-space: pre-wrap; max-height: 40vh; overflow: auto; }
-      .sembunyi { display: none !important; }
-      .petunjuk { font-size: 12.5px; color: var(--redup); margin: 6px 0 0; }
-      @media (max-width: 720px) {
-        .produk-layout { grid-template-columns: 1fr; }
+
+      @media (max-width: 760px) {
+        header.bar { padding: 10px 16px; flex-wrap: wrap; }
+        .tabs { margin-left: 0; width: 100%; }
+        main { padding: 16px; }
+        .panel { padding: 20px; }
+        .produk-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+        .produk-kiri { position: static; }
+        .daftar { flex-direction: row; max-height: none; overflow-x: auto; padding-bottom: 6px; }
+        .daftar button { min-width: 180px; }
         .c2, .c3 { grid-template-columns: 1fr; }
         .kategori-baris { grid-template-columns: 1fr 1fr; }
       }
@@ -114,8 +179,14 @@
   </head>
   <body>
     <header class="bar">
-      <h1>Admin Mekar Boutique</h1>
-      <nav class="tabs">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <div>
+          <h1>Mekar Boutique</h1>
+          <p class="sub">Panel admin</p>
+        </div>
+      </div>
+      <nav class="tabs" aria-label="Bagian">
         <button data-tab="kontak" class="aktif">Kontak &amp; Brand</button>
         <button data-tab="produk">Produk &amp; Foto</button>
       </nav>
@@ -172,7 +243,7 @@
           </div>
         </div>
 
-        <h2 style="margin-top:26px">Media Sosial <span>— tautan lengkap</span></h2>
+        <h2>Media Sosial <span>— tautan lengkap</span></h2>
         <div class="grid c3">
           <div>
             <label>Instagram</label>
@@ -188,7 +259,7 @@
           </div>
         </div>
 
-        <h2 style="margin-top:26px">Jam Buka</h2>
+        <h2>Jam Buka</h2>
         <div id="jam-list" class="kategori-edit"></div>
         <div class="aksi">
           <button class="btn" id="jam-tambah">+ Tambah baris jam</button>
@@ -199,7 +270,7 @@
       <!-- ============ PANEL PRODUK ============ -->
       <section id="panel-produk" class="panel sembunyi">
         <div class="produk-layout">
-          <div>
+          <div class="produk-kiri">
             <h2>Produk <span id="jumlah-produk"></span></h2>
             <div class="daftar" id="daftar-produk"></div>
             <div class="aksi">
@@ -285,7 +356,7 @@
               </div>
             </div>
 
-            <h2 style="margin-top:26px">Foto Produk</h2>
+            <h2>Foto Produk</h2>
             <p class="petunjuk">
               Foto utama dipakai di kartu &amp; halaman detail. Foto galeri jadi gambar tambahan.
               Semua foto otomatis dipotong 4:5 dan dikonversi ke WebP.
@@ -299,11 +370,11 @@
           </div>
         </div>
 
-        <hr style="border:0;border-top:1px solid var(--garis);margin:26px 0" />
+        <hr class="pisah" />
         <details>
-          <summary style="cursor:pointer;font-weight:600">Ubah kategori <span style="color:var(--redup);font-weight:400">(lanjutan)</span></summary>
+          <summary>Ubah kategori <span>(lanjutan)</span></summary>
           <p class="petunjuk">Slug kategori dipakai di produk. Ubah hanya bila perlu.</p>
-          <div id="kategori-list" class="kategori-edit" style="margin-top:10px"></div>
+          <div id="kategori-list" class="kategori-edit"></div>
           <div class="aksi">
             <button class="btn" id="kategori-tambah">+ Tambah kategori</button>
             <button class="btn utama" id="simpan-kategori">Simpan kategori</button>
